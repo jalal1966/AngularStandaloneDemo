@@ -12,6 +12,11 @@ namespace AngularStandaloneDemo.Models
         public string Salt { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string TelephoneNo { get; set; } = string.Empty;
+        public decimal Salary { get; set; } = 0m; // Fix: Changed to decimal type and initialized to 0
+        public string Note { get; set; } = string.Empty;
+        public Gender Gender { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? LastLoginAt { get; set; }
@@ -33,6 +38,12 @@ namespace AngularStandaloneDemo.Models
 
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty;
+        public string TelephoneNo { get; set; } = string.Empty;
+        public decimal Salary { get; set; } = 0m; // Fix: Changed to decimal type and initialized to 0
+        public string Note { get; set; } = string.Empty;
+        public Gender Gender { get; set; }
+
     }
 
     public class LoginDto

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
+
 namespace AngularStandaloneDemo.Data
 {
     public class ApplicationDbContext : DbContext
@@ -17,6 +18,10 @@ namespace AngularStandaloneDemo.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Removed the Gender property configuration as User class does not have a Gender property
+            modelBuilder.Entity<User>()
+            .Property(u => u.Gender)
+            .HasConversion<int>(); // Store the enum as an integer
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Product>()
@@ -43,5 +48,6 @@ namespace AngularStandaloneDemo.Data
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? LastLoginAt { get; set; }
+        public Gender Gender { get; set; }
     }
 }
