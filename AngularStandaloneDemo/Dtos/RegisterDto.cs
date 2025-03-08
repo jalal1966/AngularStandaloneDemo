@@ -14,6 +14,6 @@ namespace AngularStandaloneDemo.Dtos
         public decimal Salary { get; set; }
         public string? Note { get; set; }
         public int JobTitleID { get; set; } // Added property to fix CS1061
-        public int GenderID { get; internal set; } // Added property to fix CS1061
+        public int GenderID { get; set; } // Added property to fix CS1061
     }
 }

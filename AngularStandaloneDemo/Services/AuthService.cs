@@ -41,10 +41,10 @@ namespace AngularStandaloneDemo.Services
                 .SingleOrDefaultAsync(u => u.Username == loginDto.Username);
 
             if (user == null)
-                return null;
+                throw new Exception("Invalid username or password");
 
-            if (!VerifyPasswordHash(loginDto.Password, user.PasswordHash, user.Salt))
-                return null;
+            if (user.Salt == null || !VerifyPasswordHash(loginDto.Password, user.PasswordHash, user.Salt))
+                throw new Exception("Invalid username or password");
 
             // Update last login time
             user.LastLoginAt = DateTime.Now;
@@ -91,7 +91,6 @@ namespace AngularStandaloneDemo.Services
                 Note = registerDto.Note,
                 CreatedAt = DateTime.Now
             };
-#pragma warning restore CS8601 // Possible null reference assignment.
 #pragma warning restore CS8601 // Possible null reference assignment.
 #pragma warning restore CS8601 // Possible null reference assignment.
 #pragma warning restore CS8601 // Possible null reference assignment.

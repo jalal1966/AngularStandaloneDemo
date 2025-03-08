@@ -77,7 +77,7 @@ namespace AngularStandaloneDemo.Controllers
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
 
-            if (user == null ||
+            if (user == null || user.Salt == null ||
                 !PasswordHashService.VerifyPassword(model.Password, user.Salt, user.PasswordHash))
                 return Unauthorized("Invalid username or password");
 
