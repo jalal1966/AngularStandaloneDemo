@@ -26,10 +26,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Add Token Service
+// Register services from Startup.ConfigureServices
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<TokenService>();
 
-// JWT Authentication
+// JWT Authentication - keeping your existing configuration
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,12 +52,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add CORS policy
+// Add CORS policy (keeping your existing policy name "AllowAngularDevServer")
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularDevServer",
@@ -67,13 +68,7 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-
-
 // Configure the HTTP request pipeline.
-// Add these lines before app.UseAuthorization()
-app.UseAuthentication();
-app.UseAuthorization();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -81,12 +76,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
+
+// Use CORS before authentication/authorization
 app.UseCors("AllowAngularDevServer");
 
+// Authentication must come before Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();

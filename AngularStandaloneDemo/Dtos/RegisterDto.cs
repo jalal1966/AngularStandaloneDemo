@@ -4,27 +4,16 @@ namespace AngularStandaloneDemo.Dtos
 {
     public class RegisterDto
     {
-        [Required]
-        public string? Username { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string? Email { get; set; }
-
-        [Required]
-        [MinLength(5)]
-        public string? Password { get; set; }
-
+        public required string Username { get; set; }
+        public required string Email { get; set; }
+        public required string Password { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        [Required]
         public string? Address { get; set; }
-        [Required]
         public string? TelephoneNo { get; set; }
-       
-        public decimal Salary { get; set; } = 0m; // Fix: Changed to decimal type and initialized to 0
-       
+        public decimal Salary { get; set; }
         public string? Note { get; set; }
-
+        public int JobTitleID { get; set; } // Added property to fix CS1061
+        public int GenderID { get; internal set; } // Added property to fix CS1061
     }
 }

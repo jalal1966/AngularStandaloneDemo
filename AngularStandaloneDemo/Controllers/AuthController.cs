@@ -9,6 +9,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using AngularStandaloneDemo.Models;
+
+
 
 namespace AngularStandaloneDemo.Controllers
 {
@@ -18,11 +24,13 @@ namespace AngularStandaloneDemo.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
 
-        public AuthController(ApplicationDbContext context, IConfiguration configuration)
+        public AuthController(ApplicationDbContext context, IConfiguration configuration, IAuthService authService)
         {
             _context = context;
             _configuration = configuration;
+            _authService = authService;
         }
 
         [HttpPost("register")]
@@ -47,6 +55,12 @@ namespace AngularStandaloneDemo.Controllers
                 Salt = salt,
                 FirstName = model.FirstName ?? string.Empty, // Fix for CS8601
                 LastName = model.LastName ?? string.Empty, // Fix for CS8601
+                Address = model.Address ?? string.Empty, // Fix for CS8601
+                TelephoneNo = model.TelephoneNo ?? string.Empty, // Fix for CS8601
+                Salary = model.Salary, // Fix for CS8601
+                Note = model.Note ?? string.Empty, // Fix for CS8601
+                JobTitleID = model.JobTitleID, // Fix for CS860
+                GenderID = model.GenderID, // Fix for CS860
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 LastLoginAt = DateTime.UtcNow,
@@ -108,6 +122,35 @@ namespace AngularStandaloneDemo.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
+        {
+            await _authService.ForgotPasswordAsync(model.Email);
+
+            // Always return OK even if email doesn't exist for security reasons
+            return Ok(new { message = "If your email exists in our system, you will receive a password reset link shortly." });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto model)
+        {
+            if (!await _authService.ValidateEmailTokenAsync(model.Email, model.Token))
+                return BadRequest(new { message = "Invalid token" });
+
+            var result = await _authService.ResetPasswordAsync(model.Email, model.Token, model.Password);
+
+            if (!result)
+                return BadRequest(new { message = "Password reset failed" });
+
+            return Ok(new { message = "Password has been reset successfully" });
+        }
+
+        [HttpPost("validate-reset-token")]
+        public async Task<IActionResult> ValidateResetToken([FromBody] ValidateTokenDto model)
+        {
+            var isValid = await _authService.ValidateEmailTokenAsync(model.Email, model.Token);
+            return Ok(new { isValid });
         }
     }
 }

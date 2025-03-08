@@ -40,5 +40,10 @@ namespace AngularStandaloneDemo.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        internal string GenerateJwtToken(User user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

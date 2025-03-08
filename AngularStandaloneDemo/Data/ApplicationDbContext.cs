@@ -18,10 +18,7 @@ namespace AngularStandaloneDemo.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Removed the Gender property configuration as User class does not have a Gender property
-            modelBuilder.Entity<User>()
-            .Property(u => u.Gender)
-            .HasConversion<int>(); // Store the enum as an integer
+            
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Product>()
@@ -36,18 +33,5 @@ namespace AngularStandaloneDemo.Data
             );
         }
     };
-    public class User
-    {
-        public int UserID { get; set; }
-        public string Username { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string PasswordHash { get; set; } = string.Empty;
-        public string Salt { get; set; } = string.Empty;
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
-        public DateTime? LastLoginAt { get; set; }
-        public Gender Gender { get; set; }
-    }
+   
 }
