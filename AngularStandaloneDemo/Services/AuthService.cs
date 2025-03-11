@@ -56,9 +56,8 @@ namespace AngularStandaloneDemo.Services
             return new AuthResponseDto
             {
                 Token = token,
+                Username = user.Username,
                 Expiration = DateTime.UtcNow.AddHours(3), // Match token expiration in TokenService
-                Email = user.Email,
-                Username = user.Username
             };
         }
 
@@ -72,8 +71,6 @@ namespace AngularStandaloneDemo.Services
 
             CreatePasswordHash(registerDto.Password, out string passwordHash, out string salt);
 
-#pragma warning disable CS8601 // Possible null reference assignment.
-#pragma warning disable CS8601 // Possible null reference assignment.
 #pragma warning disable CS8601 // Possible null reference assignment.
 #pragma warning disable CS8601 // Possible null reference assignment.
 #pragma warning disable CS8601 // Possible null reference assignment.

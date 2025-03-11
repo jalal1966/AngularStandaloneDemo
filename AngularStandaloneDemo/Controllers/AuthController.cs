@@ -36,8 +36,11 @@ namespace AngularStandaloneDemo.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
-            if (model.Username == null || model.Email == null || model.Password == null)
+            if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
                 return BadRequest("Username, email, and password are required");
+
+            if (model.Password != model.ConfirmPassword)
+                return BadRequest("Passwords do not match");
 
             // Check if user already exists
             if (await _context.Users.AnyAsync(u => u.Username == model.Username || u.Email == model.Email))
@@ -91,8 +94,9 @@ namespace AngularStandaloneDemo.Controllers
             return Ok(new AuthResponseDto
             {
                 Token = token,
+                Username = user.Username,
                 Expiration = DateTime.UtcNow.AddHours(1),
-                Username = user.Username
+                JobTitleId = user.JobTitleID // Include the job title ID
             });
         }
 
