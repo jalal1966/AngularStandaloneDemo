@@ -7,8 +7,18 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using AngularStandaloneDemo.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Register the ValidationActionFilter
+builder.Services.AddScoped<ValidationActionFilter>();
+
+// Add services to the container.
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationActionFilter>();
+});
 
 // Add services to the container
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

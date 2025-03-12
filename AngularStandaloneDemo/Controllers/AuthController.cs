@@ -13,12 +13,14 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using AngularStandaloneDemo.Models;
+using AngularStandaloneDemo.Filters;
 
 
 
 namespace AngularStandaloneDemo.Controllers
 {
     [Route("api/[controller]")]
+    [ServiceFilter(typeof(ValidationActionFilter))]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -36,46 +38,81 @@ namespace AngularStandaloneDemo.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto model)
         {
-            if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
-                return BadRequest("Username, email, and password are required");
-
-            if (model.Password != model.ConfirmPassword)
-                return BadRequest("Passwords do not match");
-
-            // Check if user already exists
-            if (await _context.Users.AnyAsync(u => u.Username == model.Username || u.Email == model.Email))
-                return BadRequest("Username or email already exists");
-
-            // Generate salt and hash password
-            string salt = PasswordHashService.GenerateSalt();
-            string passwordHash = PasswordHashService.HashPassword(model.Password, salt);
-
-            var user = new User
+            try
             {
-                Username = model.Username,
-                Email = model.Email,
-                PasswordHash = passwordHash,
-                Salt = salt,
-                FirstName = model.FirstName ?? string.Empty, // Fix for CS8601
-                LastName = model.LastName ?? string.Empty, // Fix for CS8601
-                Address = model.Address ?? string.Empty, // Fix for CS8601
-                TelephoneNo = model.TelephoneNo ?? string.Empty, // Fix for CS8601
-                Salary = model.Salary, // Fix for CS8601
-                Note = model.Note ?? string.Empty, // Fix for CS8601
-                JobTitleID = model.JobTitleID, // Fix for CS860
-                GenderID = model.GenderID, // Fix for CS860
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                LastLoginAt = DateTime.UtcNow,
-            };
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState
+                        .Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(
+                            kvp => kvp.Key,
+                            kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
+                        );
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+                    var response = new CustomErrorResponse
+                    {
+                        StatusCode = 400,
+                        Errors = errors.SelectMany(e => e.Value).ToList() // Flatten the dictionary values to a list
+                    };
 
-            return Ok(new { message = "Registration successful" });
+                    return BadRequest(response);
+                }
+
+
+                if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+                    return BadRequest(new { message = "Username, email, and password are required" });
+
+                if (model.Password != model.ConfirmPassword)
+                    return BadRequest(new { message = "Passwords do not match" });
+
+                // Check if user already exists
+                if (await _context.Users.AnyAsync(u => u.Username == model.Username))
+                    return BadRequest(new { message = "Username already exists" });
+
+                // Check if Email already exists
+                if (await _context.Users.AnyAsync(u => u.Email == model.Email))
+                    return BadRequest(new { message = "Email already exists" });
+
+                // Generate salt and hash password
+                string salt = PasswordHashService.GenerateSalt();
+                string passwordHash = PasswordHashService.HashPassword(model.Password, salt);
+
+                var user = new User
+                {
+                    Username = model.Username,
+                    Email = model.Email,
+                    PasswordHash = passwordHash,
+                    Salt = salt,
+                    FirstName = model.FirstName ?? string.Empty, // Fix for CS8601
+                    LastName = model.LastName ?? string.Empty, // Fix for CS8601
+                    Address = model.Address ?? string.Empty, // Fix for CS8601
+                    TelephoneNo = model.TelephoneNo ?? string.Empty, // Fix for CS8601
+                    Salary = model.Salary, // Fix for CS8601
+                    Note = model.Note ?? string.Empty, // Fix for CS8601
+                    JobTitleID = model.JobTitleID, // Fix for CS860
+                    GenderID = model.GenderID, // Fix for CS860
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    LastLoginAt = DateTime.UtcNow,
+                };
+
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Registration successful" });
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new CustomErrorResponse
+                {
+                    StatusCode = 500,
+                    Message = ex.Message
+                });
+            }
         }
 
-        [HttpPost("login")]
+[HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
