@@ -86,6 +86,7 @@ namespace AngularStandaloneDemo.Controllers
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     LastLoginAt = DateTime.UtcNow,
+                    Specialist = string.Empty // Add this line to set the required 'Specialist' property
                 };
 
                 // Save the user to the database
@@ -127,7 +128,9 @@ namespace AngularStandaloneDemo.Controllers
                 Token = token,
                 Username = user.Username,
                 Expiration = DateTime.UtcNow.AddHours(1),
-                JobTitleId = user.JobTitleID // Include the job title ID
+                JobTitleId = user.JobTitleID, // Include the job title ID
+                FirstName = user.FirstName,
+                LastName = user.LastName,
             });
         }
 

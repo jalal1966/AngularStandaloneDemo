@@ -7,5 +7,9 @@
        
         public string Username { get; set; } = string.Empty;
         public int JobTitleId { get; set; } // Added JobTitleId for role-based routing
+
+        public string FirstName { get; internal set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+      
     }
 }

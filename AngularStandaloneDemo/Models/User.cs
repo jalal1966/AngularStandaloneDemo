@@ -1,5 +1,7 @@
 ﻿// Models/User.cs
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AngularStandaloneDemo.Models
 {
@@ -14,6 +16,7 @@ namespace AngularStandaloneDemo.Models
         public string? Salt { get; set; }
         public required string FirstName { get; set; }
         public required string LastName { get; set; }
+        public required string Specialist { get; set; }
         public required string Address { get; set; }
         public required string TelephoneNo { get; set; }
         public decimal? Salary { get; set; }

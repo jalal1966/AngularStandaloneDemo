@@ -18,9 +18,14 @@ namespace AngularStandaloneDemo.Dtos
         [Required]
         [Compare(nameof(Password), ErrorMessage = "The password and confirmation password do not match.")]
         public required string ConfirmPassword { get; set; }
-
+        
+        [Required]
         public string? FirstName { get; set; }
+       
+        [Required]
         public string? LastName { get; set; }
+        [Required]
+        public string? Specialist { get; set; }
         public string? Address { get; set; }
         public string? TelephoneNo { get; set; }
 

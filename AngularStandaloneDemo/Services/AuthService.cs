@@ -82,6 +82,7 @@ namespace AngularStandaloneDemo.Services
                 Salt = salt,
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
+                Specialist = registerDto.Specialist,
                 Address = registerDto.Address,
                 TelephoneNo = registerDto.TelephoneNo,
                 Salary = registerDto.Salary,
