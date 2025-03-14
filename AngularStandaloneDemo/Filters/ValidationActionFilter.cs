@@ -11,18 +11,20 @@ namespace AngularStandaloneDemo.Filters
         {
             if (!context.ModelState.IsValid)
             {
-                var errors = context.ModelState.Values.SelectMany(v => v.Errors)
-                                                     .Select(e => e.ErrorMessage)
-                                                     .ToList();
+                var errors = context.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
 
                 var errorResponse = new CustomErrorResponse
                 {
                     StatusCode = 400,
                     Message = "Validation Failed",
-                    Errors = errors
+                    Errors = errors // This should be a list of strings
                 };
 
-                context.Result = new BadRequestObjectResult(errorResponse);
+                // Return the ModelState directly to use ASP.NET Core's standard validation response
+                context.Result = new BadRequestObjectResult(context.ModelState);
             }
         }
 

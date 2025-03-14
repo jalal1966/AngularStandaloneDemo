@@ -4,18 +4,14 @@ using AngularStandaloneDemo.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using AngularStandaloneDemo.Models;
 using AngularStandaloneDemo.Filters;
-
-
 
 namespace AngularStandaloneDemo.Controllers
 {
@@ -40,79 +36,77 @@ namespace AngularStandaloneDemo.Controllers
         {
             try
             {
-                if (!ModelState.IsValid)
+                // Validate required fields
+                if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
                 {
-                    var errors = ModelState
-                        .Where(x => x.Value.Errors.Count > 0)
-                        .ToDictionary(
-                            kvp => kvp.Key,
-                            kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).ToArray()
-                        );
-
-                    var response = new CustomErrorResponse
-                    {
-                        StatusCode = 400,
-                        Errors = errors.SelectMany(e => e.Value).ToList() // Flatten the dictionary values to a list
-                    };
-
-                    return BadRequest(response);
+                    ModelState.AddModelError("", "Username, email, and password are required");
+                    return BadRequest(ModelState);
                 }
 
-
-                if (string.IsNullOrEmpty(model.Username) || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
-                    return BadRequest(new { message = "Username, email, and password are required" });
-
+                // Check if passwords match
                 if (model.Password != model.ConfirmPassword)
-                    return BadRequest(new { message = "Passwords do not match" });
+                {
+                    ModelState.AddModelError("ConfirmPassword", "Passwords do not match");
+                    return BadRequest(ModelState);
+                }
 
-                // Check if user already exists
+                // Check for duplicate username
                 if (await _context.Users.AnyAsync(u => u.Username == model.Username))
-                    return BadRequest(new { message = "Username already exists" });
+                {
+                    ModelState.AddModelError("Username", "Username already exists");
+                    return BadRequest(ModelState);
+                }
 
-                // Check if Email already exists
+                // Check for duplicate email
                 if (await _context.Users.AnyAsync(u => u.Email == model.Email))
-                    return BadRequest(new { message = "Email already exists" });
+                {
+                    ModelState.AddModelError("Email", "Email already exists");
+                    return BadRequest(ModelState);
+                }
 
-                // Generate salt and hash password
+                // Hash the password
                 string salt = PasswordHashService.GenerateSalt();
                 string passwordHash = PasswordHashService.HashPassword(model.Password, salt);
 
+                // Create a new user
                 var user = new User
                 {
                     Username = model.Username,
                     Email = model.Email,
                     PasswordHash = passwordHash,
                     Salt = salt,
-                    FirstName = model.FirstName ?? string.Empty, // Fix for CS8601
-                    LastName = model.LastName ?? string.Empty, // Fix for CS8601
-                    Address = model.Address ?? string.Empty, // Fix for CS8601
-                    TelephoneNo = model.TelephoneNo ?? string.Empty, // Fix for CS8601
-                    Salary = model.Salary, // Fix for CS8601
-                    Note = model.Note ?? string.Empty, // Fix for CS8601
-                    JobTitleID = model.JobTitleID, // Fix for CS860
-                    GenderID = model.GenderID, // Fix for CS860
+                    FirstName = model.FirstName ?? string.Empty,
+                    LastName = model.LastName ?? string.Empty,
+                    Address = model.Address ?? string.Empty,
+                    TelephoneNo = model.TelephoneNo ?? string.Empty,
+                    Salary = model.Salary,
+                    Note = model.Note ?? string.Empty,
+                    JobTitleID = model.JobTitleID,
+                    GenderID = model.GenderID,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     LastLoginAt = DateTime.UtcNow,
                 };
 
+                // Save the user to the database
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
                 return Ok(new { message = "Registration successful" });
-
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new CustomErrorResponse
+                // Log the full exception, including inner exceptions
+                var errorMessage = ex.Message;
+                if (ex.InnerException != null)
                 {
-                    StatusCode = 500,
-                    Message = ex.Message
-                });
+                    errorMessage += " Inner Exception: " + ex.InnerException.Message;
+                }
+                return StatusCode(500, new { message = "Server Error", errors = new[] { errorMessage } });
             }
         }
 
-[HttpPost("login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
@@ -164,6 +158,7 @@ namespace AngularStandaloneDemo.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
         {

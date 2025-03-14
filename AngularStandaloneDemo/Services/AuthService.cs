@@ -113,7 +113,7 @@ namespace AngularStandaloneDemo.Services
             string resetLink = $"http://localhost:4200/reset-password?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
             string emailBody = $"Please click the following link to reset your password: {resetLink}";
 
-            await _emailService.SendEmailAsync(email, "Password Reset", emailBody);
+            await _emailService.SendEmail(email, "Password Reset", emailBody);
 
             return true;
         }

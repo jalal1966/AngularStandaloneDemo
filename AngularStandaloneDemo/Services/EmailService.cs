@@ -8,7 +8,7 @@ namespace AngularStandaloneDemo.Services
 {
     public interface IEmailService
     {
-        Task<bool> SendEmailAsync(string to, string subject, string body);
+        Task<bool> SendEmail(string to, string subject, string body);
     }
 
     public class EmailService : IEmailService
@@ -20,7 +20,7 @@ namespace AngularStandaloneDemo.Services
             _configuration = configuration;
         }
 
-        public async Task<bool> SendEmailAsync(string to, string subject, string body)
+        public bool SendEmail(string to, string subject, string body)
         {
             try
             {
@@ -60,6 +60,11 @@ namespace AngularStandaloneDemo.Services
                 Console.WriteLine($"Error sending email: {ex.Message}");
                 return false;
             }
+        }
+
+        Task<bool> IEmailService.SendEmail(string to, string subject, string body)
+        {
+            throw new NotImplementedException();
         }
     }
 }
