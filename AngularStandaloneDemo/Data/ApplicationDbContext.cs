@@ -27,10 +27,7 @@ namespace AngularStandaloneDemo.Data
             base.OnModelCreating(modelBuilder);
 
             // Configure Patient and MedicalRecord relationships
-            modelBuilder.Entity<Patient>()
-                .HasOne(p => p.User)
-                .WithMany()
-                .HasForeignKey(p => p.UserID);
+           
 
             modelBuilder.Entity<MedicalRecord>()
                 .HasOne(m => m.Patient)

@@ -47,8 +47,13 @@ namespace AngularStandaloneDemo.Controllers
                     EmergencyContactName = p.EmergencyContactName,
                     EmergencyContactNumber = p.EmergencyContactNumber,
                     InsuranceProvider = p.InsuranceProvider,
-                    InsuranceNumber = p.InsuranceNumber
-                })
+                    InsuranceNumber = p.InsuranceNumber,
+                    NursID = p.NursID,
+                    NursName = p.NursName,
+                    PatientDoctor = p.PatientDoctor,
+                    PatientDoctorID = p.PatientDoctorID
+        
+    })
                 .ToListAsync();
 
             return Ok(patients);
@@ -76,7 +81,11 @@ namespace AngularStandaloneDemo.Controllers
                 EmergencyContactName = patient.EmergencyContactName,
                 EmergencyContactNumber = patient.EmergencyContactNumber,
                 InsuranceProvider = patient.InsuranceProvider,
-                InsuranceNumber = patient.InsuranceNumber
+                InsuranceNumber = patient.InsuranceNumber,   
+                NursID = patient.NursID,
+                NursName = patient.NursName,
+                PatientDoctor = patient.PatientDoctor,
+                PatientDoctorID = patient.PatientDoctorID
             });
         }
 
@@ -86,6 +95,7 @@ namespace AngularStandaloneDemo.Controllers
             // Since we don't have user authentication, we'll need to handle the UserID differently
             // For now, we'll assign a default or null UserID, depending on your DB constraints
 
+#pragma warning disable IDE0090 // Use 'new(...)'
             Patient patient = new Patient
             {
                 FirstName = patientDto.FirstName,
@@ -100,9 +110,13 @@ namespace AngularStandaloneDemo.Controllers
                 InsuranceProvider = patientDto.InsuranceProvider,
                 InsuranceNumber = patientDto.InsuranceNumber,
                 RegistrationDate = DateTime.UtcNow,
-                UserID = 1, // Use a default UserID or null, depending on your requirements
+                NursID = patientDto.NursID,
+                NursName = patientDto.NursName,
+                PatientDoctor = patientDto.PatientDoctor,
+                PatientDoctorID = patientDto.PatientDoctorID,
                 MedicalRecords = new List<MedicalRecord>() // Initialize MedicalRecords list
             };
+#pragma warning restore IDE0090 // Use 'new(...)'
 
             _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
@@ -145,7 +159,8 @@ namespace AngularStandaloneDemo.Controllers
                     Notes = m.Notes,
                     IsFollowUpRequired = m.IsFollowUpRequired,
                     FollowUpDate = m.FollowUpDate,
-                    PatientId = m.PatientId
+                    PatientId = m.PatientId,
+
                 })
                 .ToListAsync();
 

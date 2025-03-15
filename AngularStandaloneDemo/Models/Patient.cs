@@ -19,8 +19,10 @@ namespace AngularStandaloneDemo.Models
         public string? EmergencyContactNumber { get; set; }
         public string? InsuranceProvider { get; set; }
         public string? InsuranceNumber { get; set; }
-        public int UserID { get; internal set; } // Foreign key to User who manages this patient
-        public User? User { get; set; } // Navigation property
+        public int? NursID { get; set; }
+        public string? NursName { get; set; }
+        public string? PatientDoctor { get; set; }
+        public int? PatientDoctorID { get; set; }
         public required ICollection<MedicalRecord> MedicalRecords { get; set; }
     }
 }

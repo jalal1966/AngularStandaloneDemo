@@ -107,6 +107,55 @@ namespace AngularStandaloneDemo.Controllers
             }
         }
 
+        [HttpGet("users/job/{id}")]
+        public async Task<IActionResult> GetUsersByJobTitle(int id)
+        {
+            try
+            {
+                // Query users with the specified JobTitleId
+                var users = await _context.Users
+                    .Where(u => u.JobTitleID == id)
+                    .Select(u => new
+                    {
+                        u.UserID,
+                        u.Username,
+                        u.Email,
+                        u.FirstName,
+                        u.LastName,
+                        u.Address,
+                        u.TelephoneNo,
+                        u.Salary,
+                        u.Note,
+                        u.JobTitleID,
+                        u.GenderID,
+                        u.CreatedAt,
+                        u.UpdatedAt,
+                        u.LastLoginAt,
+                        u.Specialist
+                    })
+                    .ToListAsync();
+
+                // Check if any users were found
+                if (users == null || !users.Any())
+                {
+                    return NotFound(new { message = "No users found with the specified job title ID" });
+                }
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                // Log the full exception, including inner exceptions
+                var errorMessage = ex.Message;
+                if (ex.InnerException != null)
+                {
+                    errorMessage += " Inner Exception: " + ex.InnerException.Message;
+                }
+                return StatusCode(500, new { message = "Server Error", errors = new[] { errorMessage } });
+            }
+        }
+
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
@@ -131,7 +180,8 @@ namespace AngularStandaloneDemo.Controllers
                 JobTitleId = user.JobTitleID, // Include the job title ID
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-            });
+                UserID =user.UserID
+    });
         }
 
         private string GenerateJwtToken(User user)

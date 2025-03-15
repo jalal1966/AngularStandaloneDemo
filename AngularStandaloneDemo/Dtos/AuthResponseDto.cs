@@ -10,6 +10,7 @@
 
         public string FirstName { get; internal set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
+        public int UserID { get; set; }
       
     }
 }
