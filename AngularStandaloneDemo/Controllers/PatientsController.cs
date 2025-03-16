@@ -50,7 +50,7 @@ namespace AngularStandaloneDemo.Controllers
                     InsuranceNumber = p.InsuranceNumber,
                     NursID = p.NursID,
                     NursName = p.NursName,
-                    PatientDoctor = p.PatientDoctor,
+                    PatientDoctorName = p.PatientDoctorName,
                     PatientDoctorID = p.PatientDoctorID
         
     })
@@ -84,7 +84,7 @@ namespace AngularStandaloneDemo.Controllers
                 InsuranceNumber = patient.InsuranceNumber,   
                 NursID = patient.NursID,
                 NursName = patient.NursName,
-                PatientDoctor = patient.PatientDoctor,
+                PatientDoctorName = patient.PatientDoctorName,
                 PatientDoctorID = patient.PatientDoctorID
             });
         }
@@ -112,7 +112,7 @@ namespace AngularStandaloneDemo.Controllers
                 RegistrationDate = DateTime.UtcNow,
                 NursID = patientDto.NursID,
                 NursName = patientDto.NursName,
-                PatientDoctor = patientDto.PatientDoctor,
+                PatientDoctorName = patientDto.PatientDoctorName,
                 PatientDoctorID = patientDto.PatientDoctorID,
                 MedicalRecords = new List<MedicalRecord>() // Initialize MedicalRecords list
             };

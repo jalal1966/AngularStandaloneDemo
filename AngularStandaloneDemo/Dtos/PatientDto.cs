@@ -20,7 +20,7 @@ namespace AngularStandaloneDemo.Dtos
         public string? InsuranceNumber { get; set; }
         public int? NursID { get; set; }
         public string? NursName { get; set; }
-        public string? PatientDoctor { get; set; }
+        public string? PatientDoctorName { get; set; }
         public int? PatientDoctorID { get; set; }
     }
 }
