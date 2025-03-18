@@ -1,9 +1,7 @@
 ﻿using AngularStandaloneDemo.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using DoctorAppointmentSystem.Models;
+using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-
 
 namespace AngularStandaloneDemo.Data
 {
@@ -13,12 +11,12 @@ namespace AngularStandaloneDemo.Data
             : base(options)
         {
         }
-        public DbSet<User> Users { get; set; }
-
+        public DbSet<User> Users { get; set; } 
+        public DbSet<Availability> Availabilities { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<WaitingList> WaitingList { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
-
-
         public DbSet<Product> Products { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,8 +24,31 @@ namespace AngularStandaloneDemo.Data
             
             base.OnModelCreating(modelBuilder);
 
-            // Configure Patient and MedicalRecord relationships
-           
+            // ✅ Ensure the correct table name
+            modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<Patient>().ToTable("Patients");
+
+            modelBuilder.Entity<User>()
+               .HasKey(u => u.UserID); // Ensure UserID is properly configured as the primary key
+
+            // Configure relationships and constraints
+            // FIXED: Remove the duplicate configuration and keep only the more specific one
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.Provider)
+                .WithMany(u => u.Appointments)
+                .HasForeignKey(a => a.ProviderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+       
+            modelBuilder.Entity<WaitingList>()
+                .HasKey(w => w.Id); // Ensure primary key is set           
+
+
+            modelBuilder.Entity<WaitingList>()
+                .HasOne(w => w.Appointment)
+                .WithMany()
+                .HasForeignKey(m => m.Id)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MedicalRecord>()
                 .HasOne(m => m.Patient)
@@ -37,19 +58,14 @@ namespace AngularStandaloneDemo.Data
             modelBuilder.Entity<MedicalRecord>()
                 .HasOne(m => m.User)
                 .WithMany()
-                .HasForeignKey(m => m.UserId);
-
-
+                .HasForeignKey(m => m.UserID);
+           
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 4); // Allows up to 4 decimal places
 
-            // Seed data with static CreatedAt values
-            modelBuilder.Entity<Product>().HasData(
-                new Product { Id = 1, Name = "Product 1", Description = "Description of Product 1", Price = 19.99m, CreatedAt = new DateTime(2024, 1, 1, 12, 0, 0) },
-                new Product { Id = 2, Name = "Product 2", Description = "Description of Product 2", Price = 29.99m, CreatedAt = new DateTime(2024, 1, 2, 12, 0, 0) },
-                new Product { Id = 3, Name = "Product 3", Description = "Description of Product 3", Price = 39.99m, CreatedAt = new DateTime(2024, 1, 3, 12, 0, 0) }
-            );
+            base.OnModelCreating(modelBuilder); 
+        
         }
     };
    

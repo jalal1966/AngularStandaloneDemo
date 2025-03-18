@@ -1,9 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DoctorAppointmentSystem.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace AngularStandaloneDemo.Models
 {
     public class Patient
     {
+        public Patient()
+        {
+            Appointments = new List<Appointment>();
+            MedicalRecords = new HashSet<MedicalRecord>();
+        }
+        [Key]
         public int Id { get; set; }
         [Required]
         public string? FirstName { get; set; }
@@ -24,5 +31,12 @@ namespace AngularStandaloneDemo.Models
         public string? PatientDoctorName { get; set; }
         public int? PatientDoctorID { get; set; }
         public required ICollection<MedicalRecord> MedicalRecords { get; set; }
+        // Navigation property
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+
+
+
+
+
     }
 }

@@ -4,6 +4,7 @@ using AngularStandaloneDemo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AngularStandaloneDemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250317155423_FixPatientsTable")]
+    partial class FixPatientsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -313,6 +316,9 @@ namespace AngularStandaloneDemo.Migrations
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("PatientId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("ProviderId")
                         .HasColumnType("int");
 
@@ -331,6 +337,8 @@ namespace AngularStandaloneDemo.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PatientId");
+
+                    b.HasIndex("PatientId1");
 
                     b.HasIndex("ProviderId");
 
@@ -374,7 +382,7 @@ namespace AngularStandaloneDemo.Migrations
                     b.HasOne("AngularStandaloneDemo.Models.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("AngularStandaloneDemo.Models.User", "Provider")
@@ -391,13 +399,17 @@ namespace AngularStandaloneDemo.Migrations
             modelBuilder.Entity("DoctorAppointmentSystem.Models.Appointment", b =>
                 {
                     b.HasOne("AngularStandaloneDemo.Models.Patient", "Patient")
-                        .WithMany("Appointments")
+                        .WithMany("PatientsAppointments")
                         .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AngularStandaloneDemo.Models.User", "Provider")
+                    b.HasOne("AngularStandaloneDemo.Models.Patient", null)
                         .WithMany("Appointments")
+                        .HasForeignKey("PatientId1");
+
+                    b.HasOne("AngularStandaloneDemo.Models.User", "Provider")
+                        .WithMany("AppointmentsAsProvider")
                         .HasForeignKey("ProviderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -416,11 +428,13 @@ namespace AngularStandaloneDemo.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("MedicalRecords");
+
+                    b.Navigation("PatientsAppointments");
                 });
 
             modelBuilder.Entity("AngularStandaloneDemo.Models.User", b =>
                 {
-                    b.Navigation("Appointments");
+                    b.Navigation("AppointmentsAsProvider");
 
                     b.Navigation("Availabilities");
                 });

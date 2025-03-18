@@ -22,5 +22,6 @@ namespace AngularStandaloneDemo.Dtos
         public string? NursName { get; set; }
         public string? PatientDoctorName { get; set; }
         public int? PatientDoctorID { get; set; }
+        public DateTime RegistrationDate { get; internal set; }
     }
 }

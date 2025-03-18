@@ -70,6 +70,18 @@ internal class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+       
+        // Add CORS
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAngularOrigins",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+        });
 
         // Add CORS policy (keeping your existing policy name "AllowAngularDevServer")
         builder.Services.AddCors(options =>
@@ -80,6 +92,8 @@ internal class Program
                     .AllowAnyMethod()
                     .AllowAnyHeader());
         });
+
+
 
         var app = builder.Build();
 
