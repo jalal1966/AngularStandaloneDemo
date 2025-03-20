@@ -16,6 +16,15 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddLogging(logging =>
+        {
+            logging.ClearProviders();
+            logging.AddConsole();  // Console logger
+            logging.AddDebug();    // Debug output logger
+        });
+
+
+
         // Register the ValidationActionFilter
         builder.Services.AddScoped<ValidationActionFilter>();
 

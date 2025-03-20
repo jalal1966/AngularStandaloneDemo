@@ -6,6 +6,7 @@ using AngularStandaloneDemo.Enums;
 using DoctorAppointmentSystem.DTOs;
 using DoctorAppointmentSystem.Models;
 using AngularStandaloneDemo.Models;
+using System.Data;
 namespace AngularStandaloneDemo.Controllers
 {
     [ApiController]
@@ -22,12 +23,14 @@ namespace AngularStandaloneDemo.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointments()
         {
+            var dateNow = DateTime.UtcNow.Date; // Define inside method
             var appointments = await _context.Appointments
                 .Include(a => a.Patient)
                 .Include(a => a.Provider)
+                .Where(a => a.StartTime >= dateNow) // Filtering in the database
                 .ToListAsync();
 
-            return appointments.Select(MapToDto).ToList();
+            return appointments.Select(MapToDto).ToList() ;
         }
 
         [HttpGet("{id}")]
@@ -65,6 +68,7 @@ namespace AngularStandaloneDemo.Controllers
                 .Include(a => a.Provider)
                 .Where(a => a.PatientId == patientId)
                 .ToListAsync();
+                
 
             return appointments.Select(MapToDto).ToList();
         }
@@ -126,6 +130,54 @@ namespace AngularStandaloneDemo.Controllers
             return availableSlots;
         }
 
+        [HttpGet("doctr-waiting-list")]
+        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentsByDateRange(
+    [FromQuery] DateTime startDate,
+    [FromQuery] DateTime endDate,
+    [FromQuery] int? providerId = null)
+        {
+            if (startDate > endDate)
+            {
+                return BadRequest("Start date must be before or equal to end date.");
+            }
+
+            // Start with base query
+            var query = _context.Appointments
+                .Include(a => a.Patient)
+                .Include(a => a.Provider)
+                .Where(a => a.StartTime >= startDate && a.StartTime <= endDate && a.ProviderId==providerId);
+
+            // Apply optional filters
+            if (providerId.HasValue)
+            {
+                query = query.Where(a => a.ProviderId == providerId.Value);
+            }
+
+            var appointments = await query.ToListAsync();
+            return appointments.Select(MapToDto).ToList();
+        }
+
+        [HttpGet("date-range")]
+        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentsByDateRange(
+          [FromQuery] DateTime startDate,
+          [FromQuery] DateTime endDate)
+          
+        {
+            if (startDate > endDate)
+            {
+                return BadRequest("Start date must be before or equal to end date.");
+            }
+
+            // Start with base query
+            var query = _context.Appointments
+                .Include(a => a.Patient)
+                .Include(a => a.Provider)
+                .Where(a => a.StartTime >= startDate && a.StartTime <= endDate);
+
+
+            var appointments = await query.ToListAsync();
+            return appointments.Select(MapToDto).ToList();
+        }
         [HttpPost]
         public async Task<ActionResult<AppointmentDto>> CreateAppointment(AppointmentCreateDto appointmentDto)
         {
@@ -326,20 +378,22 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<IEnumerable<WaitingListDto>>> GetWaitingList()
         {
             var waitingList = await _context.WaitingList
+                 .AsNoTracking()
                 .Include(w => w.Patient)
                 .Include(w => w.Provider)
-                .Where(w => w.Status == WaitingStatus.Active)
+                .Where(predicate: static w => w.Status != null)
                 .ToListAsync();
-
+            // var dtos = waitingList.Select(MapToDto).ToList();
             return waitingList.Select(MapToDto).ToList();
         }
+
 
         [HttpGet("provider/{providerId}")]
         public async Task<ActionResult<IEnumerable<WaitingListDto>>> GetWaitingListByProvider(int providerId)
         {
             var waitingList = await _context.WaitingList
                 .Include(w => w.Patient)
-                .Where(w => w.ProviderId == providerId && w.Status == WaitingStatus.Active)
+                .Where(w => w.ProviderId == providerId && w.Status != null)
                 .ToListAsync();
 
             return waitingList.Select(MapToDto).ToList();
@@ -350,7 +404,7 @@ namespace AngularStandaloneDemo.Controllers
         {
             var waitingList = await _context.WaitingList
                 .Include(w => w.Provider)
-                .Where(w => w.PatientId == patientId && w.Status == WaitingStatus.Active)
+                .Where(w => w.PatientId == patientId && w.Status != null)
                 .ToListAsync();
 
             return waitingList.Select(MapToDto).ToList();
