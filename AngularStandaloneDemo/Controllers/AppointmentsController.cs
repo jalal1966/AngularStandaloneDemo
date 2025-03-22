@@ -130,6 +130,7 @@ namespace AngularStandaloneDemo.Controllers
             return availableSlots;
         }
 
+
         [HttpGet("doctr-waiting-list")]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentsByDateRange(
     [FromQuery] DateTime startDate,
@@ -233,9 +234,10 @@ namespace AngularStandaloneDemo.Controllers
                 Provider = provider, // Initialize the required Provider member
                 StartTime = appointmentDto.StartTime,
                 EndTime = appointmentDto.EndTime,
-                Notes = appointmentDto.Notes,
                 Type = Enum.Parse<AppointmentType>(appointmentDto.Type),
-                Status = AppointmentStatus.Scheduled
+                Status = Enum.Parse<AppointmentStatus>(appointmentDto.Status),
+                Notes = appointmentDto.Notes,
+                
             };
             try
             {
@@ -354,9 +356,9 @@ namespace AngularStandaloneDemo.Controllers
                 ProviderLastName = appointment.Provider?.LastName,
                 StartTime = appointment.StartTime,
                 EndTime = appointment.EndTime,
+                Type = appointment.Type.ToString(),
                 Status = appointment.Status.ToString(),
                 Notes = appointment.Notes,
-                Type = appointment.Type.ToString()
             };
 #pragma warning restore CS8601 // Possible null reference assignment.
         }
