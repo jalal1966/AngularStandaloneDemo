@@ -16,6 +16,8 @@ namespace AngularStandaloneDemo.Data
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<WaitingList> WaitingList { get; set; }
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<PatientDetails> PatientDetails { get; set; }
+        public DbSet<PatientTask> PatientTasks { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
         public DbSet<Product> Products { get; set; } = null!;
 
@@ -63,6 +65,27 @@ namespace AngularStandaloneDemo.Data
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasPrecision(18, 4); // Allows up to 4 decimal places
+
+            // Configure relationships
+            // Configure relationships
+            modelBuilder.Entity<PatientTask>()
+                .HasOne(pt => pt.PatientDetails)  // Correct navigation property
+                .WithMany(p => p.Tasks)  // Ensure Patient has Tasks collection
+                .HasForeignKey(pt => pt.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PatientTask>()
+                .HasOne(pt => pt.AssignedNurse)
+                .WithMany(n => n.AssignedTasks)
+                .HasForeignKey(pt => pt.AssignedToNurseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PatientTask>()
+                .HasOne(pt => pt.CreatedByNurse)
+                .WithMany(n => n.CreatedTasks)
+                .HasForeignKey(pt => pt.CreatedByNurseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             base.OnModelCreating(modelBuilder); 
         

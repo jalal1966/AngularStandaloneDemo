@@ -316,7 +316,12 @@ namespace AngularStandaloneDemo.Controllers
                 return NotFound();
             }
 
-            appointment.Status = Enum.Parse<AppointmentStatus>(status);
+            // Ensure the status string is valid for the enum
+            if (!Enum.TryParse<AppointmentStatus>(status, out var parsedStatus))
+            {
+                return BadRequest("Invalid status value.");
+            }
+            appointment.Status = parsedStatus;
             await _context.SaveChangesAsync();
 
             return NoContent();

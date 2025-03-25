@@ -33,10 +33,7 @@ namespace AngularStandaloneDemo.Models
         public required ICollection<MedicalRecord> MedicalRecords { get; set; }
         // Navigation property
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-
-
-
-
+        public virtual ICollection<PatientTask> Tasks { get; set; } = new List<PatientTask>();
 
     }
 }

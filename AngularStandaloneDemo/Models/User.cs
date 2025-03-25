@@ -14,6 +14,8 @@ namespace AngularStandaloneDemo.Models
             // Initialize collections to avoid null reference exceptions
             Availabilities = new List<Availability>();
             Appointments = new List<Appointment>();
+            AssignedTasks = new List<PatientTask>();  // Initialize collection
+            CreatedTasks = new List<PatientTask>();   // Initialize collection
             //Appointments = new List<Appointment>();
             //PatientsAppointments = new List<Appointment>();
             // ProvidersAppointments = new List<Appointment>();
@@ -46,6 +48,8 @@ namespace AngularStandaloneDemo.Models
 
         // For users who are providers (doctors/nurses)
         public ICollection<Appointment> Appointments { get; set; }
+        public List<PatientTask> AssignedTasks { get; }
+        public List<PatientTask> CreatedTasks { get; }
     }
 
 }
