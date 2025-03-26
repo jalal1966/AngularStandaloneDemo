@@ -17,10 +17,7 @@ namespace AngularStandaloneDemo.Controllers
         {
             _context = context;
         }
-        private Enums.TaskStatus ConvertToCustomTaskStatus(System.Threading.Tasks.TaskStatus status)
-        {
-            throw new NotImplementedException();
-        }
+
 
         // GET: api/patient-tasks/nurse/{nurseId}
         [HttpGet("nurse/{nurseId}")]
@@ -28,7 +25,7 @@ namespace AngularStandaloneDemo.Controllers
         {
             return await _context.PatientTasks
                 .Where(t => t.AssignedToNurseId == nurseId)
-                .Include(t => t.PatientDetails)
+                .Include(t => t.Patient)
                 .OrderByDescending(t => t.Priority)
                 .ThenBy(t => t.DueDate)
                 .ToListAsync();
@@ -76,7 +73,7 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<PatientTask>> GetTask(int id)
         {
             var task = await _context.PatientTasks
-                .Include(t => t.PatientDetails)
+                .Include(t => t.Patient)
                 .Include(t => t.AssignedNurse)
                 .FirstOrDefaultAsync(t => t.Id == id);
 

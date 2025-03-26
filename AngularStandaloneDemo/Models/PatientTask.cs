@@ -6,10 +6,13 @@ namespace AngularStandaloneDemo.Models
     public class PatientTask
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
         public int Id { get; set; }
 
         [Required]
         public int PatientId { get; set; }
+        // Make PatientDetails nullable or ensure it's properly initialized
+        public PatientDetails? PatientDetails { get; set; }
 
         [Required]
         [MaxLength(255)]
@@ -45,14 +48,16 @@ namespace AngularStandaloneDemo.Models
         public string? RecurringPattern { get; set; } // E.g., "daily", "every 4 hours"
 
         // Foreign Keys
-        [ForeignKey("PatientId")]
-        public virtual Patient? PatientDetails { get; set; }
+        [ForeignKey(nameof(PatientId))]
+        [InverseProperty("Tasks")] // Ensure Patient model has `Tasks` collection
+        public virtual Patient? Patient { get; set; }
 
         [ForeignKey("AssignedToNurseId")]
         public virtual User? AssignedNurse { get; set; }
 
         [ForeignKey("CreatedByNurseId")]
         public virtual User? CreatedByNurse { get; set; }
+        public int PatientDetailsId { get; set; }
     }
 }
 

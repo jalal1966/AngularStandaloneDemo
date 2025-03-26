@@ -1,10 +1,14 @@
 ﻿using AngularStandaloneDemo.Enums;
 using DoctorAppointmentSystem.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace AngularStandaloneDemo.Models
 {
     public class WaitingList
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set 
         public int Id { get; set; }
         public int PatientId { get; set; }
         public required virtual Patient Patient { get; set; }

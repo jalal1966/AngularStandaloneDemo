@@ -1,5 +1,6 @@
 ﻿using DoctorAppointmentSystem.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AngularStandaloneDemo.Models
 {
@@ -11,6 +12,7 @@ namespace AngularStandaloneDemo.Models
             MedicalRecords = new HashSet<MedicalRecord>();
         }
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
         public int Id { get; set; }
         [Required]
         public string? FirstName { get; set; }
@@ -30,10 +32,16 @@ namespace AngularStandaloneDemo.Models
         public string? NursName { get; set; }
         public string? PatientDoctorName { get; set; }
         public int? PatientDoctorID { get; set; }
+        public DateTime? LastVisitDate { get; set; }
         public required ICollection<MedicalRecord> MedicalRecords { get; set; }
         // Navigation property
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
         public virtual ICollection<PatientTask> Tasks { get; set; } = new List<PatientTask>();
+
+        public void UpdateLastVisit(DateTime visitDate)
+        {
+            LastVisitDate = visitDate;
+        }
 
     }
 }

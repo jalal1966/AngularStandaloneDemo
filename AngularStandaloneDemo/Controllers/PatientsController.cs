@@ -52,7 +52,8 @@ namespace AngularStandaloneDemo.Controllers
                     NursName = p.NursName,
                     PatientDoctorName = p.PatientDoctorName,
                     PatientDoctorID = p.PatientDoctorID,
-                    RegistrationDate = p.RegistrationDate
+                    RegistrationDate = p.RegistrationDate,
+                    LastVisitDate = p.LastVisitDate,
 
                 })
                 .ToListAsync();

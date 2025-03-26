@@ -3,6 +3,7 @@ using AngularStandaloneDemo.Enums;
 using DoctorAppointmentSystem.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AngularStandaloneDemo.Models
@@ -21,6 +22,7 @@ namespace AngularStandaloneDemo.Models
             // ProvidersAppointments = new List<Appointment>();
         }
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
         public int UserID { get; set; } // Explicitly define the primary key
         public required string Username { get; set; }
         [Required]
@@ -32,6 +34,8 @@ namespace AngularStandaloneDemo.Models
         public required string Specialist { get; set; }
         public required string Address { get; set; }
         public required string TelephoneNo { get; set; }
+        
+        [Column(TypeName = "decimal(18,2)")]
         public decimal? Salary { get; set; }
         public string? Note { get; set; } // Made nullable to fix CS8618
         public int JobTitleID { get; set; }

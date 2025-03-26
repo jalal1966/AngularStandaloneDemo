@@ -6,6 +6,7 @@ namespace AngularStandaloneDemo.Models
     public class PatientDetails
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
         public int Id { get; set; }
 
         [ForeignKey("Patient")]
@@ -33,7 +34,7 @@ namespace AngularStandaloneDemo.Models
         public DateTime AdmissionDate { get; set; }
 
         public required string ProfileImageUrl { get; set; }
-        public virtual Patient? Patient { get; set; }
+ 
         public virtual required ICollection<PatientTask> Tasks { get; set; }
     }
 }

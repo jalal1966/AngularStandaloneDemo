@@ -1,7 +1,13 @@
-﻿namespace AngularStandaloneDemo.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace AngularStandaloneDemo.Models
 {
     public class MedicalRecord
     {
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
         public int Id { get; set; }
         public DateTime RecordDate { get; set; }
         public string? Diagnosis { get; set; }

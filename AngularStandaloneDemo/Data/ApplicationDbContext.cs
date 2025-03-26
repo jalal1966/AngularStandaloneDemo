@@ -20,6 +20,7 @@ namespace AngularStandaloneDemo.Data
         public DbSet<PatientTask> PatientTasks { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
         public DbSet<Product> Products { get; set; } = null!;
+        public int PatientId { get; private set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +30,8 @@ namespace AngularStandaloneDemo.Data
             // ✅ Ensure the correct table name
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<Patient>().ToTable("Patients");
+            modelBuilder.Entity<PatientDetails>().ToTable("PatientDetails");
+            modelBuilder.Entity<PatientTask>().ToTable("PatientTasks");
 
             modelBuilder.Entity<User>()
                .HasKey(u => u.UserID); // Ensure UserID is properly configured as the primary key
@@ -55,7 +58,7 @@ namespace AngularStandaloneDemo.Data
             modelBuilder.Entity<MedicalRecord>()
                 .HasOne(m => m.Patient)
                 .WithMany(p => p.MedicalRecords)
-                .HasForeignKey(m => m.PatientId);
+                .HasForeignKey(m => m.Id);
 
             modelBuilder.Entity<MedicalRecord>()
                 .HasOne(m => m.User)
@@ -68,8 +71,16 @@ namespace AngularStandaloneDemo.Data
 
             // Configure relationships
             // Configure relationships
+
+
+            modelBuilder.Entity<PatientDetails>()
+                .HasMany(p => p.Tasks)
+                .WithOne(t => t.PatientDetails)
+                .HasForeignKey(t => t.PatientDetailsId)
+             .IsRequired(false); // Make the relationship optional
+
             modelBuilder.Entity<PatientTask>()
-                .HasOne(pt => pt.PatientDetails)  // Correct navigation property
+                .HasOne( pt => pt.Patient)  // Correct navigation property
                 .WithMany(p => p.Tasks)  // Ensure Patient has Tasks collection
                 .HasForeignKey(pt => pt.PatientId)
                 .OnDelete(DeleteBehavior.Restrict);

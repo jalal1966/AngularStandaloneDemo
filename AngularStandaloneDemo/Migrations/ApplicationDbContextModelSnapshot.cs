@@ -58,8 +58,6 @@ namespace AngularStandaloneDemo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("Diagnosis")
                         .HasColumnType("nvarchar(max)");
 
@@ -88,8 +86,6 @@ namespace AngularStandaloneDemo.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PatientId");
 
                     b.HasIndex("UserID");
 
@@ -139,6 +135,9 @@ namespace AngularStandaloneDemo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("LastVisitDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("NursID")
                         .HasColumnType("int");
 
@@ -157,6 +156,119 @@ namespace AngularStandaloneDemo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Patients", (string)null);
+                });
+
+            modelBuilder.Entity("AngularStandaloneDemo.Models.PatientDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AdmissionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("BedNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PrimaryDiagnosis")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("ProfileImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoomNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PatientDetails", (string)null);
+                });
+
+            modelBuilder.Entity("AngularStandaloneDemo.Models.PatientTask", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssignedToNurseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CompletedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CreatedByNurseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRecurring")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PatientDetailsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecurringPattern")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedToNurseId");
+
+                    b.HasIndex("CreatedByNurseId");
+
+                    b.HasIndex("PatientDetailsId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("PatientTasks", (string)null);
                 });
 
             modelBuilder.Entity("AngularStandaloneDemo.Models.Product", b =>
@@ -265,8 +377,6 @@ namespace AngularStandaloneDemo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<DateTime>("ExpiryDate")
                         .HasColumnType("datetime2");
 
@@ -325,16 +435,11 @@ namespace AngularStandaloneDemo.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WaitingListId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PatientId");
 
                     b.HasIndex("ProviderId");
-
-                    b.HasIndex("WaitingListId");
 
                     b.ToTable("Appointments");
                 });
@@ -354,7 +459,7 @@ namespace AngularStandaloneDemo.Migrations
                 {
                     b.HasOne("AngularStandaloneDemo.Models.Patient", "Patient")
                         .WithMany("MedicalRecords")
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -369,8 +474,47 @@ namespace AngularStandaloneDemo.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AngularStandaloneDemo.Models.PatientTask", b =>
+                {
+                    b.HasOne("AngularStandaloneDemo.Models.User", "AssignedNurse")
+                        .WithMany("AssignedTasks")
+                        .HasForeignKey("AssignedToNurseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AngularStandaloneDemo.Models.User", "CreatedByNurse")
+                        .WithMany("CreatedTasks")
+                        .HasForeignKey("CreatedByNurseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AngularStandaloneDemo.Models.PatientDetails", "PatientDetails")
+                        .WithMany("Tasks")
+                        .HasForeignKey("PatientDetailsId");
+
+                    b.HasOne("AngularStandaloneDemo.Models.Patient", "Patient")
+                        .WithMany("Tasks")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AssignedNurse");
+
+                    b.Navigation("CreatedByNurse");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("PatientDetails");
+                });
+
             modelBuilder.Entity("AngularStandaloneDemo.Models.WaitingList", b =>
                 {
+                    b.HasOne("DoctorAppointmentSystem.Models.Appointment", "Appointment")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("AngularStandaloneDemo.Models.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId")
@@ -380,8 +524,10 @@ namespace AngularStandaloneDemo.Migrations
                     b.HasOne("AngularStandaloneDemo.Models.User", "Provider")
                         .WithMany()
                         .HasForeignKey("ProviderId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Appointment");
 
                     b.Navigation("Patient");
 
@@ -402,10 +548,6 @@ namespace AngularStandaloneDemo.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AngularStandaloneDemo.Models.WaitingList", null)
-                        .WithMany("PatientsAppointments")
-                        .HasForeignKey("WaitingListId");
-
                     b.Navigation("Patient");
 
                     b.Navigation("Provider");
@@ -416,18 +558,24 @@ namespace AngularStandaloneDemo.Migrations
                     b.Navigation("Appointments");
 
                     b.Navigation("MedicalRecords");
+
+                    b.Navigation("Tasks");
+                });
+
+            modelBuilder.Entity("AngularStandaloneDemo.Models.PatientDetails", b =>
+                {
+                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("AngularStandaloneDemo.Models.User", b =>
                 {
                     b.Navigation("Appointments");
 
-                    b.Navigation("Availabilities");
-                });
+                    b.Navigation("AssignedTasks");
 
-            modelBuilder.Entity("AngularStandaloneDemo.Models.WaitingList", b =>
-                {
-                    b.Navigation("PatientsAppointments");
+                    b.Navigation("Availabilities");
+
+                    b.Navigation("CreatedTasks");
                 });
 #pragma warning restore 612, 618
         }

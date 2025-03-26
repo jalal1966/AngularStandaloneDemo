@@ -49,7 +49,7 @@
                 @Html.DisplayNameFor(model => model.RecurringPattern)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PatientDetails)
+                @Html.DisplayNameFor(model => model.Patient)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AssignedNurse)
@@ -94,7 +94,7 @@
                 @Html.DisplayFor(modelItem => item.RecurringPattern)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PatientDetails.FirstName)
+                @Html.DisplayFor(modelItem => item.Patient.FirstName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AssignedNurse.Email)

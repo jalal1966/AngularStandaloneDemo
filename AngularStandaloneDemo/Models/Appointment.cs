@@ -1,10 +1,14 @@
 ﻿using AngularStandaloneDemo.Enums;
 using AngularStandaloneDemo.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace DoctorAppointmentSystem.Models
 {
     public class Appointment
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
         public int Id { get; set; }
         public int PatientId { get; set; }
         public int ProviderId { get; set; }

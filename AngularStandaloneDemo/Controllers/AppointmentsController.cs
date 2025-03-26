@@ -14,11 +14,18 @@ namespace AngularStandaloneDemo.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<AppointmentsController> _logger; // If you want logging
 
-        public AppointmentsController(ApplicationDbContext context)
+        // Single constructor with all required dependencies
+        public AppointmentsController(
+            ApplicationDbContext context,
+            ILogger<AppointmentsController> logger = null) // Make logger optional if not all controllers use it
         {
             _context = context;
+            _logger = logger;
         }
+
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointments()
@@ -179,72 +186,67 @@ namespace AngularStandaloneDemo.Controllers
             var appointments = await query.ToListAsync();
             return appointments.Select(MapToDto).ToList();
         }
+
         [HttpPost]
         public async Task<ActionResult<AppointmentDto>> CreateAppointment(AppointmentCreateDto appointmentDto)
         {
-            // Validate the appointment time is available
-            var conflictingAppointment = await _context.Appointments
-                .AnyAsync(a => a.ProviderId == appointmentDto.ProviderId &&
-                           a.Status != AppointmentStatus.Cancelled &&
-                           ((appointmentDto.StartTime >= a.StartTime && appointmentDto.StartTime < a.EndTime) ||
-                            (appointmentDto.EndTime > a.StartTime && appointmentDto.EndTime <= a.EndTime)));
-
-            if (conflictingAppointment)
-            {
-                return BadRequest("The requested time slot is not available.");
-            }
-
-            // Verify the Provider exists
-            var providerExists = await _context.Users
-                .AnyAsync(p => p.UserID == appointmentDto.ProviderId);
-            if (!providerExists)
-            {
-                return NotFound("Provider not found.");
-            }
-
-            // Verify the Patient exists
-            var patientExists = await _context.Patients
-                .AnyAsync(p => p.Id == appointmentDto.PatientId);
-            if (!patientExists)
-            {
-                return NotFound("Patient not found.");
-            }
-
-            // Fetch the Provider entity
-            var provider = await _context.Users
-                .FirstOrDefaultAsync(p => p.UserID == appointmentDto.ProviderId);
-            if (provider == null)
-            {
-                return NotFound("Provider not found.");
-            }
-            // Fetch the Patient entity
-            var patient = await _context.Patients
-                .FirstOrDefaultAsync(p => p.Id == appointmentDto.PatientId);
-            if (patient == null)
-            {
-                return NotFound("Patient not found.");
-            }
-            // Assume you have a WaitingList entity available
-           
-            var appointment = new Appointment
-            {
-                PatientId = appointmentDto.PatientId,
-                Patient = patient, // Initialize the required Patient member
-                ProviderId = appointmentDto.ProviderId,
-                Provider = provider, // Initialize the required Provider member
-                StartTime = appointmentDto.StartTime,
-                EndTime = appointmentDto.EndTime,
-                Type = Enum.Parse<AppointmentType>(appointmentDto.Type),
-                Status = Enum.Parse<AppointmentStatus>(appointmentDto.Status),
-                Notes = appointmentDto.Notes,
-                
-            };
+            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
+                // Validate appointment duration (e.g., minimum 15 minutes, maximum 2 hours)
+                if (appointmentDto.EndTime - appointmentDto.StartTime < TimeSpan.FromMinutes(15) ||
+                    appointmentDto.EndTime - appointmentDto.StartTime > TimeSpan.FromHours(2))
+                {
+                    return BadRequest("Invalid appointment duration.");
+                }
+
+                // More comprehensive conflicting appointment check
+                var conflictingAppointment = await _context.Appointments
+                    .AnyAsync(a => a.ProviderId == appointmentDto.ProviderId &&
+                               a.Status != AppointmentStatus.Cancelled &&
+                               a.StartTime < appointmentDto.EndTime &&
+                               a.EndTime > appointmentDto.StartTime);
+
+                if (conflictingAppointment)
+                {
+                    return BadRequest("The requested time slot is not available.");
+                }
+
+                // Verify provider and patient with more efficient querying
+                var provider = await _context.Users
+                    .FirstOrDefaultAsync(p => p.UserID == appointmentDto.ProviderId);
+
+                var patient = await _context.Patients
+                    .FirstOrDefaultAsync(p => p.Id == appointmentDto.PatientId);
+
+                if (provider == null || patient == null)
+                {
+                    return NotFound("Provider or Patient not found.");
+                }
+
+                var appointment = new Appointment
+                {
+                    PatientId = appointmentDto.PatientId,
+                    Patient = patient,
+                    ProviderId = appointmentDto.ProviderId,
+                    Provider = provider,
+                    StartTime = appointmentDto.StartTime,
+                    EndTime = appointmentDto.EndTime,
+                    Type = Enum.Parse<AppointmentType>(appointmentDto.Type),
+                    Status = Enum.Parse<AppointmentStatus>(appointmentDto.Status),
+                    Notes = appointmentDto.Notes,
+                };
+
+                // Update patient's last visit date
+                if (appointment.Status is AppointmentStatus.Completed or AppointmentStatus.Scheduled)
+                {
+                    patient.LastVisitDate = appointment.StartTime;
+                }
+
                 _context.Appointments.Add(appointment);
                 await _context.SaveChangesAsync();
 
-                // Check if this fulfills a waiting list request
+                // Handle waiting list
                 var waitingRequest = await _context.WaitingList
                     .FirstOrDefaultAsync(w => w.PatientId == appointment.PatientId &&
                                        w.ProviderId == appointment.ProviderId &&
@@ -256,19 +258,23 @@ namespace AngularStandaloneDemo.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                // Reload the appointment with related entities
+                // Commit transaction
+                await transaction.CommitAsync();
+
+                // Reload appointment with related entities
                 appointment = await _context.Appointments
                     .Include(a => a.Patient)
                     .Include(a => a.Provider)
                     .FirstOrDefaultAsync(a => a.Id == appointment.Id);
 
-                return CreatedAtAction(nameof(GetAppointment), new NewRecord(appointment.Id), MapToDto(appointment));
+                return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, MapToDto(appointment));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while creating the appointment: {ex.Message} - {ex.InnerException?.Message}");
+                // Rollback transaction
+                await transaction.RollbackAsync();
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
-
         }
 
         [HttpPut("{id}")]
