@@ -59,9 +59,10 @@ namespace AngularStandaloneDemo.Controllers
         [HttpGet("provider/{providerId}")]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAppointmentsByProvider(int providerId)
         {
+            var dateNow = DateTime.UtcNow.Date; // Define inside method
             var appointments = await _context.Appointments
                 .Include(a => a.Patient)
-                .Where(a => a.ProviderId == providerId)
+                .Where(a => a.ProviderId == providerId && a.StartTime >= dateNow)
                 .ToListAsync();
 
             return appointments.Select(MapToDto).ToList();
