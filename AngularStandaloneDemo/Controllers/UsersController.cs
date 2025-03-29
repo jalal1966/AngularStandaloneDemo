@@ -37,11 +37,11 @@ namespace AngularStandaloneDemo.Controllers
             return user;
         }
          // TO DO
-        [HttpGet("providers")]
-        public async Task<ActionResult<IEnumerable<User>>> GetProviders()
+        [HttpGet("Administrator")]
+        public async Task<ActionResult<IEnumerable<User>>> GetAdministrator()
         {
             return await _context.Users
-                .Where(u => u.Role == JobTitleID.Doctor || u.Role == JobTitleID.Nurse)
+                .Where(u => (int)u.JobTitleID == (int)JobTitleID.Admin) 
                 .ToListAsync();
         }
 
@@ -56,15 +56,15 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<IEnumerable<User>>> GetNurses()
         {
             return await _context.Users
-                .Where(u => u.Role == JobTitleID.Nurse)
+                .Where(u => (int)u.JobTitleID == (int)JobTitleID.Nurse)
                 .ToListAsync();
         }
 
-        [HttpGet("patients")]
-        public async Task<ActionResult<IEnumerable<User>>> GetPatients()
+        [HttpGet("Management")]
+        public async Task<ActionResult<IEnumerable<User>>> GetManagement()
         {
             return await _context.Users
-                .Where(u => u.Role == JobTitleID.Patient)
+                .Where(u => (int)u.JobTitleID == (int)JobTitleID.Management)
                 .ToListAsync();
         }
 
