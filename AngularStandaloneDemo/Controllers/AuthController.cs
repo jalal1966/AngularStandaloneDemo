@@ -159,6 +159,9 @@ namespace AngularStandaloneDemo.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
+            var controllerType = typeof(UsersController); // If you can reference it
+            var location = controllerType.Assembly.Location;
+            Console.WriteLine(location);
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == model.Username);
 
             if (user == null || user.Salt == null ||

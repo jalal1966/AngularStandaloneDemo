@@ -62,7 +62,7 @@ namespace AngularStandaloneDemo.Controllers
             var dateNow = DateTime.UtcNow.Date; // Define inside method
             var appointments = await _context.Appointments
                 .Include(a => a.Patient)
-                .Where(a => a.ProviderId == providerId && a.StartTime >= dateNow)
+                .Where(a => a.ProviderId == providerId && a.StartTime >= dateNow && a.Status != AppointmentStatus.Cancelled)
                 .ToListAsync();
 
             return appointments.Select(MapToDto).ToList();
