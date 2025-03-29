@@ -17,9 +17,6 @@ namespace AngularStandaloneDemo.Models
             Appointments = new List<Appointment>();
             AssignedTasks = new List<PatientTask>();  // Initialize collection
             CreatedTasks = new List<PatientTask>();   // Initialize collection
-            //Appointments = new List<Appointment>();
-            //PatientsAppointments = new List<Appointment>();
-            // ProvidersAppointments = new List<Appointment>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
@@ -38,14 +35,11 @@ namespace AngularStandaloneDemo.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal? Salary { get; set; }
         public string? Note { get; set; } // Made nullable to fix CS8618
-        public int JobTitleID { get; set; }
+        public  JobTitleID Role { get; set; }
         public int GenderID { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime LastLoginAt { get; set; }
-        public UserRole Role { get; set; }
-        // Navigation properties
-
 
         // Navigation properties - simplified and non-conflicting
         public ICollection<Availability> Availabilities { get; set; }
@@ -54,6 +48,7 @@ namespace AngularStandaloneDemo.Models
         public ICollection<Appointment> Appointments { get; set; }
         public List<PatientTask> AssignedTasks { get; }
         public List<PatientTask> CreatedTasks { get; }
+        public JobTitleID JobTitleID { get; internal set; }
     }
 
 }

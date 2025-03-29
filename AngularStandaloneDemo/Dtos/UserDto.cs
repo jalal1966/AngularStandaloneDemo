@@ -22,7 +22,6 @@ namespace AngularStandaloneDemo.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime LastLoginAt { get; set; }
-        public UserRole Role { get; set; }
 
         // Navigation properties (optional, depending on your use case)
         public ICollection<AvailabilityDto> Availabilities { get; set; } = new List<AvailabilityDto>();

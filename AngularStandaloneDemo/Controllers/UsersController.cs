@@ -36,12 +36,12 @@ namespace AngularStandaloneDemo.Controllers
 
             return user;
         }
-
+         // TO DO
         [HttpGet("providers")]
         public async Task<ActionResult<IEnumerable<User>>> GetProviders()
         {
             return await _context.Users
-                .Where(u => u.Role == UserRole.Doctor || u.Role == UserRole.Nurse)
+                .Where(u => u.Role == JobTitleID.Doctor || u.Role == JobTitleID.Nurse)
                 .ToListAsync();
         }
 
@@ -49,15 +49,14 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<IEnumerable<User>>> GetDoctors()
         {
             return await _context.Users
-                .Where(u => u.Role == UserRole.Doctor)
+               .Where(u => (int)u.JobTitleID == (int)JobTitleID.Doctor) // Cast both sides to int
                 .ToListAsync();
         }
-
         [HttpGet("nurses")]
         public async Task<ActionResult<IEnumerable<User>>> GetNurses()
         {
             return await _context.Users
-                .Where(u => u.Role == UserRole.Nurse)
+                .Where(u => u.Role == JobTitleID.Nurse)
                 .ToListAsync();
         }
 
@@ -65,7 +64,7 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<IEnumerable<User>>> GetPatients()
         {
             return await _context.Users
-                .Where(u => u.Role == UserRole.Patient)
+                .Where(u => u.Role == JobTitleID.Patient)
                 .ToListAsync();
         }
 

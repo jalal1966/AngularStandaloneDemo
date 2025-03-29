@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AngularStandaloneDemo.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace AngularStandaloneDemo.Dtos
 {
@@ -34,7 +35,7 @@ namespace AngularStandaloneDemo.Dtos
         public decimal Salary { get; set; }
 
         public string? Note { get; set; }
-        public int JobTitleID { get; set; } // Added property to fix CS1061
+        public JobTitleID JobTitleID { get; set; } // Added property to fix CS1061
         public int GenderID { get; set; } // Added property to fix CS1061
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

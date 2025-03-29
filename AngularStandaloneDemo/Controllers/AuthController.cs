@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using AngularStandaloneDemo.Models;
 using AngularStandaloneDemo.Filters;
+using AngularStandaloneDemo.Enums;
 
 namespace AngularStandaloneDemo.Controllers
 {
@@ -108,7 +109,7 @@ namespace AngularStandaloneDemo.Controllers
         }
 
         [HttpGet("users/job/{id}")]
-        public async Task<IActionResult> GetUsersByJobTitle(int id)
+        public async Task<IActionResult> GetUsersByJobTitle(JobTitleID id)
         {
             try
             {
@@ -180,7 +181,7 @@ namespace AngularStandaloneDemo.Controllers
                 Token = token,
                 Username = user.Username,
                 Expiration = DateTime.UtcNow.AddHours(1),
-                JobTitleId = user.JobTitleID, // Include the job title ID
+                JobTitleID = (int)user.JobTitleID, // Include the job title ID
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 UserID =user.UserID
