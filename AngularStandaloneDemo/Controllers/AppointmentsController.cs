@@ -354,15 +354,15 @@ namespace AngularStandaloneDemo.Controllers
             return _context.Appointments.Any(e => e.Id == id);
         }
 
-        private AppointmentDto MapToDto(Appointment appointment)
-        {
+        private AppointmentDto MapToDto(Appointment appointment) =>
 #pragma warning disable CS8601 // Possible null reference assignment.
-            return new AppointmentDto
+            new AppointmentDto
             {
                 Id = appointment.Id,
                 PatientId = appointment.PatientId,
                 PatientFirstName = appointment.Patient?.FirstName,
                 PatientLastName = appointment.Patient?.LastName,
+                LastVisitDate = appointment.Patient?.LastVisitDate,
                 ProviderId = appointment.ProviderId,
                 ProviderFirstName = appointment.Provider?.FirstName,
                 ProviderLastName = appointment.Provider?.LastName,
@@ -373,7 +373,7 @@ namespace AngularStandaloneDemo.Controllers
                 Notes = appointment.Notes,
             };
 #pragma warning restore CS8601 // Possible null reference assignment.
-        }
+
     }
 
     // --- Updated WaitingListController ---

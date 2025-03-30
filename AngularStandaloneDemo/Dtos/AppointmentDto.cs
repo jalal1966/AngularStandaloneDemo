@@ -1,4 +1,7 @@
-﻿namespace DoctorAppointmentSystem.DTOs
+﻿using AngularStandaloneDemo.Models;
+using System.Text.Json.Serialization;
+
+namespace DoctorAppointmentSystem.DTOs
 {
     public class AppointmentDto
     {
@@ -15,6 +18,7 @@
         public required string Status { get; set; }
         public required string Type { get; set; }
         public required string Notes { get; set; }
+        public DateTime? LastVisitDate { get; internal set; }
     }
 
   

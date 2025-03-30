@@ -20,11 +20,7 @@ namespace DoctorAppointmentSystem.Models
 
         // Make navigation properties optional by adding '?'
         public virtual required Patient Patient { get; set; }
-        public virtual required User Provider { get; set; }
-
-        
+        public virtual required User Provider { get; set; }    
 
     }
-
-
 }
