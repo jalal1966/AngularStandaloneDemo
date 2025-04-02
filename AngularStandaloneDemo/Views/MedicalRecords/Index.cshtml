@@ -1,0 +1,145 @@
+﻿@model IEnumerable<AngularStandaloneDemo.Models.MedicalRecord>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.RecordDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Diagnosis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Treatment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Medications)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsFollowUpRequired)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FollowUpDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PatientId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Patient)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.User)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Height)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BMI)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BloodType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChronicConditions)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SurgicalHistory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FamilyMedicalHistory)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SocialHistory)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecordDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Diagnosis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Treatment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Medications)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsFollowUpRequired)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FollowUpDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PatientId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Patient.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Height)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Weight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BMI)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BloodType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChronicConditions)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SurgicalHistory)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FamilyMedicalHistory)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SocialHistory)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

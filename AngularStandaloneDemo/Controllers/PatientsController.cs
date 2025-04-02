@@ -34,29 +34,28 @@ namespace AngularStandaloneDemo.Controllers
         {
             // Since we no longer require authorization, we'll get all patients
             var patients = await _context.Patients
-                .Select(p => new PatientDto
-                {
-                    Id = p.Id,
-                    FirstName = p.FirstName,
-                    LastName = p.LastName,
-                    DateOfBirth = p.DateOfBirth,
-                    GenderID = p.GenderID,
-                    ContactNumber = p.ContactNumber,
-                    Email = p.Email,
-                    Address = p.Address,
-                    EmergencyContactName = p.EmergencyContactName,
-                    EmergencyContactNumber = p.EmergencyContactNumber,
-                    InsuranceProvider = p.InsuranceProvider,
-                    InsuranceNumber = p.InsuranceNumber,
-                    NursID = p.NursID,
-                    NursName = p.NursName,
-                    PatientDoctorName = p.PatientDoctorName,
-                    PatientDoctorID = p.PatientDoctorID,
-                    RegistrationDate = p.RegistrationDate,
-                    LastVisitDate = p.LastVisitDate,
-
-                })
-                .ToListAsync();
+            .Select(p => new PatientDto
+            {
+                Id = p.Id,
+                FirstName = p.FirstName,
+                LastName = p.LastName,
+                DateOfBirth = p.DateOfBirth,
+                GenderID = p.GenderID,
+                ContactNumber = p.ContactNumber,
+                Email = p.Email,
+                Address = p.Address,
+                EmergencyContactName = p.EmergencyContactName,
+                EmergencyContactNumber = p.EmergencyContactNumber,
+                InsuranceProvider = p.InsuranceProvider,
+                InsuranceNumber = p.InsuranceNumber,
+                NursID = p.NursID,
+                NursName = p.NursName,
+                PatientDoctorName = p.PatientDoctorName,
+                PatientDoctorID = p.PatientDoctorID,
+                RegistrationDate = p.RegistrationDate,
+                LastVisitDate = p.LastVisitDate,
+            })
+            .ToListAsync();
 
             return Ok(patients);
         }
@@ -65,30 +64,91 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<PatientDto>> GetPatient(int id)
         {
             var patient = await _context.Patients
-                .FirstOrDefaultAsync(p => p.Id == id);
+            .Include(p => p.Gender)
+            .Include(p => p.MedicalRecords)
+            .Include(p => p.Allergies)
+            .Include(p => p.Medications.Where(m => m.IsActive))
+            .Include(p => p.Visits.OrderByDescending(v => v.VisitDate).Take(5))
+            .Include(p => p.LabResults.OrderByDescending(l => l.TestDate).Take(10))
+            .FirstOrDefaultAsync(p => p.Id == id);
 
             if (patient == null)
+            {
                 return NotFound();
+            }
 
-            return Ok(new PatientDto
+            var medicalRecord = patient.MedicalRecords.FirstOrDefault();
+
+            var patientDetail = new PatientDetailDto
             {
                 Id = patient.Id,
                 FirstName = patient.FirstName,
                 LastName = patient.LastName,
                 DateOfBirth = patient.DateOfBirth,
                 GenderID = patient.GenderID,
+                //GenderName = patient.Gender.GetType,
                 ContactNumber = patient.ContactNumber,
                 Email = patient.Email,
                 Address = patient.Address,
                 EmergencyContactName = patient.EmergencyContactName,
                 EmergencyContactNumber = patient.EmergencyContactNumber,
                 InsuranceProvider = patient.InsuranceProvider,
-                InsuranceNumber = patient.InsuranceNumber,   
+                InsuranceNumber = patient.InsuranceNumber,
                 NursID = patient.NursID,
                 NursName = patient.NursName,
                 PatientDoctorName = patient.PatientDoctorName,
-                PatientDoctorID = patient.PatientDoctorID
-            });
+                PatientDoctorID = patient.PatientDoctorID,
+                RegistrationDate = patient.RegistrationDate,
+                LastVisitDate = patient.LastVisitDate,
+
+                // Medical record data
+                Height = medicalRecord?.Height,
+                Weight = medicalRecord?.Weight,
+                BMI = medicalRecord?.BMI,
+                BloodType = medicalRecord?.BloodType,
+
+                // Related data
+                Allergies = patient.Allergies.Select(a => new AllergyDto
+                {
+                    Id = a.Id,
+                    AllergyType = a.AllergyType,
+                    Name = a.Name,
+                    Reaction = a.Reaction,
+                    Severity = a.Severity
+                }).ToList(),
+
+                CurrentMedications = patient.Medications.Select(m => new MedicationDto
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Dosage = m.Dosage,
+                    Frequency = m.Frequency,
+                    StartDate = m.StartDate,
+                    EndDate = m.EndDate,
+                    PrescribingProvider = m.PrescribingProvider,
+                    Purpose = m.Purpose
+                }).ToList(),
+
+                RecentVisits = patient.Visits.Select(v => new VisitSummaryDto
+                {
+                    Id = v.Id,
+                    VisitDate = v.VisitDate,
+                    ProviderName = v.ProviderName,
+                    VisitType = v.VisitType,
+                    Reason = v.Reason
+                }).ToList(),
+
+                RecentLabResults = patient.LabResults.Select(l => new LabResultDto
+                {
+                    Id = l.Id,
+                    TestDate = l.TestDate,
+                    TestName = l.TestName,
+                    Result = l.Result,
+                    ReferenceRange = l.ReferenceRange
+                }).ToList()
+            };
+
+            return Ok(patientDetail);
         }
 
         [HttpPost]
@@ -131,44 +191,6 @@ namespace AngularStandaloneDemo.Controllers
         // Add Update and Delete endpoints
     }
 
-    [Route("api/[controller]")]
-    [ApiController]
-    public class MedicalRecordsController : ControllerBase
-    {
-        private readonly ApplicationDbContext _context;
+    
 
-        public MedicalRecordsController(ApplicationDbContext context) => _context = context;
-
-        [HttpGet("patient/{patientId}")]
-        public async Task<ActionResult<IEnumerable<MedicalRecordDto>>> GetMedicalRecords(int patientId)
-        {
-            // Verify the patient exists
-            var patient = await _context.Patients
-                .FirstOrDefaultAsync(p => p.Id == patientId);
-
-            if (patient == null)
-                return NotFound("Patient not found");
-
-            var records = await _context.MedicalRecords
-                .Where(m => m.PatientId == patientId)
-                .Select(m => new MedicalRecordDto
-                {
-                    Id = m.Id,
-                    RecordDate = m.RecordDate,
-                    Diagnosis = m.Diagnosis,
-                    Treatment = m.Treatment,
-                    Medications = m.Medications,
-                    Notes = m.Notes,
-                    IsFollowUpRequired = m.IsFollowUpRequired,
-                    FollowUpDate = m.FollowUpDate,
-                    PatientId = m.PatientId,
-
-                })
-                .ToListAsync();
-
-            return Ok(records);
-        }
-
-        // Implement other CRUD endpoints for medical records
-    }
 }

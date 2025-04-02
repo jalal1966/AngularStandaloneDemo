@@ -2,6 +2,7 @@
 using DoctorAppointmentSystem.Models;
 using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.EntityFrameworkCore;
+using AngularStandaloneDemo.Dtos;
 
 namespace AngularStandaloneDemo.Data
 {
@@ -19,6 +20,12 @@ namespace AngularStandaloneDemo.Data
         public DbSet<PatientDetails> PatientDetails { get; set; }
         public DbSet<PatientTask> PatientTasks { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
+        public DbSet<Allergy> Allergies { get; set; }
+        
+        public DbSet<Medication> Medications { get; set; }
+        public DbSet<LabResult> LabResults { get; set; }
+        public DbSet<Immunization> Immunizations { get; set; }
+
         public DbSet<Product> Products { get; set; } = null!;
         public int PatientId { get; private set; }
 
@@ -101,6 +108,11 @@ namespace AngularStandaloneDemo.Data
             base.OnModelCreating(modelBuilder); 
         
         }
+        public DbSet<AngularStandaloneDemo.Models.Allergy> Allergy { get; set; } = default!;
+        public DbSet<AngularStandaloneDemo.Models.Medication> Medication { get; set; } = default!;
+        public DbSet<AngularStandaloneDemo.Dtos.PatientInfoDto> PatientInfoDto { get; set; } = default!;
+        public DbSet<AngularStandaloneDemo.Models.LabResult> LabResult { get; set; } = default!;
+        public DbSet<AngularStandaloneDemo.Models.Immunization> Immunization { get; set; } = default!;
     };
    
 }

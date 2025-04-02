@@ -1,4 +1,5 @@
-﻿using DoctorAppointmentSystem.Models;
+﻿using AngularStandaloneDemo.Enums;
+using DoctorAppointmentSystem.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -33,8 +34,16 @@ namespace AngularStandaloneDemo.Models
         public string? PatientDoctorName { get; set; }
         public int? PatientDoctorID { get; set; }
         public DateTime? LastVisitDate { get; set; }
-        public required ICollection<MedicalRecord> MedicalRecords { get; set; }
-        // Navigation property
+
+
+
+        // Navigation properties
+        public virtual Gender Gender { get; set; }
+        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }
+        public virtual ICollection<Allergy> Allergies { get; set; }
+        public virtual ICollection<Medication> Medications { get; set; }
+        public virtual ICollection<Visit> Visits { get; set; }
+        public virtual ICollection<LabResult> LabResults { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
         public virtual ICollection<PatientTask> Tasks { get; set; } = new List<PatientTask>();
 

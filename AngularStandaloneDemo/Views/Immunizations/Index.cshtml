@@ -1,0 +1,67 @@
+﻿@model IEnumerable<AngularStandaloneDemo.Models.Immunization>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.VaccineName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdministrationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LotNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AdministeringProvider)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Patient)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.VaccineName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdministrationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LotNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdministeringProvider)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Patient.FirstName)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

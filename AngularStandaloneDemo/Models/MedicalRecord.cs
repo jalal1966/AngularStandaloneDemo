@@ -20,5 +20,15 @@ namespace AngularStandaloneDemo.Models
         public Patient? Patient { get; set; } // Navigation property
         public int UserID { get; set; } // Doctor/provider who created the record
         public User? User { get; set; }
+
+        public double? Height { get; set; }
+        public double? Weight { get; set; }
+        public double? BMI { get; set; }
+        public string? BloodType { get; set; }
+        public string? ChronicConditions { get; set; }
+        public string? SurgicalHistory { get; set; }
+        public string? FamilyMedicalHistory { get; set; }
+        public string? SocialHistory { get; set; }
+
     }
 }
