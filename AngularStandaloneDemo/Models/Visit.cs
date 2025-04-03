@@ -13,11 +13,11 @@ namespace AngularStandaloneDemo.Models
         public string? VisitType { get; set; } // Primary Care, Specialist, Emergency, etc.
         public string? Reason { get; set; }
         public string? Assessment { get; set; }
-        public string Plan { get; set; }
+        public string? Plan { get; set; }
         public string? Notes { get; set; }
 
         // Navigation property
-        public virtual Patient Patient { get; set; }
-        public virtual ICollection<Diagnosis> Diagnoses { get; set; }
+        public virtual Patient? Patient { get; set; }
+        public virtual required ICollection<Diagnosis> Diagnoses { get; set; }
     }
 }

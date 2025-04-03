@@ -1,4 +1,6 @@
-﻿namespace AngularStandaloneDemo.Dtos
+﻿using AngularStandaloneDemo.Enums;
+
+namespace AngularStandaloneDemo.Dtos
 {
     // Extended PatientDto with additional information
     public class PatientDetailDto
@@ -8,7 +10,7 @@
         public string? LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public int GenderID { get; set; }
-        public string? GenderName { get; set; }
+        public virtual Gender Gender { get; set; }
         public string? ContactNumber { get; set; }
         public string? Email { get; set; }
         public string? Address { get; set; }
@@ -34,5 +36,6 @@
         public required List<MedicationDto> CurrentMedications { get; set; }
         public required List<VisitSummaryDto> RecentVisits { get; set; }
         public required List<LabResultDto> RecentLabResults { get; set; }
+        
     }
 }

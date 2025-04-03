@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AngularStandaloneDemo.Data;
 using AngularStandaloneDemo.Dtos;
+using AngularStandaloneDemo.Enums;
 
 namespace AngularStandaloneDemo.Controllers
 {
@@ -26,7 +27,7 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<PatientInfoDto>> GetPatientInfo(int id)
         {
             var patient = await _context.Patients
-                .Include(p => p.Gender)
+           
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (patient == null)
@@ -41,6 +42,7 @@ namespace AngularStandaloneDemo.Controllers
                 LastName = patient.LastName,
                 DateOfBirth = patient.DateOfBirth,
                 GenderID = patient.GenderID,
+                Gender = (Gender)patient.GenderID, // Cast the integer to the enum
                 //GenderName = patient.Gender?.Name,
                 ContactNumber = patient.ContactNumber,
                 Email = patient.Email,

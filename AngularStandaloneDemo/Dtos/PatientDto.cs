@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AngularStandaloneDemo.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace AngularStandaloneDemo.Dtos
 {
@@ -11,6 +12,7 @@ namespace AngularStandaloneDemo.Dtos
         public string? LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public int GenderID { get; set; }
+        public virtual Gender Gender { get; set; }
         public string? ContactNumber { get; set; }
         public string? Email { get; set; }
         public string? Address { get; set; }

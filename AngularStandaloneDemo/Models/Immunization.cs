@@ -26,7 +26,7 @@ namespace AngularStandaloneDemo.Models
         public string? AdministeringProvider { get; set; }
 
         // Navigation Property
-        [ForeignKey("PatientId")]
-        public required Patient Patient { get; set; }
+        // [ForeignKey("PatientId")]
+       // public required Patient Patient { get; set; }
     }
 }

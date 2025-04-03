@@ -25,7 +25,7 @@ namespace AngularStandaloneDemo.Data
         public DbSet<Medication> Medications { get; set; }
         public DbSet<LabResult> LabResults { get; set; }
         public DbSet<Immunization> Immunizations { get; set; }
-
+        public DbSet<Visit> Visits { get; set; }
         public DbSet<Product> Products { get; set; } = null!;
         public int PatientId { get; private set; }
 
@@ -113,6 +113,7 @@ namespace AngularStandaloneDemo.Data
         public DbSet<AngularStandaloneDemo.Dtos.PatientInfoDto> PatientInfoDto { get; set; } = default!;
         public DbSet<AngularStandaloneDemo.Models.LabResult> LabResult { get; set; } = default!;
         public DbSet<AngularStandaloneDemo.Models.Immunization> Immunization { get; set; } = default!;
+        public DbSet<AngularStandaloneDemo.Models.Visit> Visit { get; set; } = default!;
     };
    
 }

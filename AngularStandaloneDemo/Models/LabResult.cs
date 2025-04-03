@@ -13,6 +13,6 @@
         public string? Notes { get; set; }
 
         // Navigation property
-        public virtual required Patient Patient { get; set; }
+        // public virtual required Patient Patient { get; set; }
     }
 }
