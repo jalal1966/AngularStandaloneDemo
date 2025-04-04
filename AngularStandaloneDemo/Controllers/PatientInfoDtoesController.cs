@@ -82,6 +82,7 @@ namespace AngularStandaloneDemo.Controllers
             patient.LastName = patientInfo.LastName;
             patient.DateOfBirth = patientInfo.DateOfBirth;
             patient.GenderID = patientInfo.GenderID;
+
             patient.ContactNumber = patientInfo.ContactNumber;
             patient.Email = patientInfo.Email;
             patient.Address = patientInfo.Address;

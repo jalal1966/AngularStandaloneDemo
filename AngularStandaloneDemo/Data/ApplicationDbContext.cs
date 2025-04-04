@@ -63,12 +63,12 @@ namespace AngularStandaloneDemo.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MedicalRecord>()
-                .HasOne(m => m.Patient)
+                .HasOne<Patient>()
                 .WithMany(p => p.MedicalRecords)
                 .HasForeignKey(m => m.Id);
 
             modelBuilder.Entity<MedicalRecord>()
-                .HasOne(m => m.User)
+                .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(m => m.UserID);
            

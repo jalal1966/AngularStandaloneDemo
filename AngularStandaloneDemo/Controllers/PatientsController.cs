@@ -11,6 +11,7 @@ using AngularStandaloneDemo.Dtos;
 using System.Security.Claims;
 using AngularStandaloneDemo.Services;
 using System.Configuration;
+using AngularStandaloneDemo.Enums;
 
 namespace AngularStandaloneDemo.Controllers
 {
@@ -41,6 +42,7 @@ namespace AngularStandaloneDemo.Controllers
                 LastName = p.LastName,
                 DateOfBirth = p.DateOfBirth,
                 GenderID = p.GenderID,
+                Gender = (Gender)p.GenderID,
                 ContactNumber = p.ContactNumber,
                 Email = p.Email,
                 Address = p.Address,
@@ -64,7 +66,6 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<PatientDto>> GetPatient(int id)
         {
             var patient = await _context.Patients
-            .Include(p => p.Gender)
             .Include(p => p.MedicalRecords)
             .Include(p => p.Allergies)
             .Include(p => p.Medications.Where(m => m.IsActive))

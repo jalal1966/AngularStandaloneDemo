@@ -376,70 +376,7 @@ namespace AngularStandaloneDemo.Controllers
 
     }
 
-    // --- Updated WaitingListController ---
-    [ApiController]
-    [Route("api/[controller]")]
-    public class WaitingListController : ControllerBase
-    {
-        private readonly ApplicationDbContext _context;
-
-        public WaitingListController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<WaitingListDto>>> GetWaitingList()
-        {
-            var waitingList = await _context.WaitingList
-                 .AsNoTracking()
-                .Include(w => w.Patient)
-                .Include(w => w.Provider)
-                .Where(predicate: static w => w.Status != null)
-                .ToListAsync();
-            // var dtos = waitingList.Select(MapToDto).ToList();
-            return waitingList.Select(MapToDto).ToList();
-        }
-
-
-        [HttpGet("provider/{providerId}")]
-        public async Task<ActionResult<IEnumerable<WaitingListDto>>> GetWaitingListByProvider(int providerId)
-        {
-            var waitingList = await _context.WaitingList
-                .Include(w => w.Patient)
-                .Where(w => w.ProviderId == providerId && w.Status != null)
-                .ToListAsync();
-
-            return waitingList.Select(MapToDto).ToList();
-        }
-
-        [HttpGet("patient/{patientId}")]
-        public async Task<ActionResult<IEnumerable<WaitingListDto>>> GetWaitingListByPatient(int patientId)
-        {
-            var waitingList = await _context.WaitingList
-                .Include(w => w.Provider)
-                .Where(w => w.PatientId == patientId && w.Status != null)
-                .ToListAsync();
-
-            return waitingList.Select(MapToDto).ToList();
-        }
-
-        // Other methods remain the same...
-
-        private WaitingListDto MapToDto(WaitingList waitingList) => new WaitingListDto
-        {
-            Id = waitingList.Id,
-            PatientId = waitingList.PatientId,
-            PatientFisrtName = waitingList.Patient?.FirstName,
-            PatientLastName = waitingList.Patient?.LastName,
-            ProviderId = waitingList.ProviderId,
-            ProviderLastName = waitingList.Provider?.LastName,
-            RequestedDate = waitingList.RequestedDate,
-            ExpiryDate = waitingList.ExpiryDate,
-            Status = waitingList.Status.ToString(),
-            Notes = waitingList.Notes
-        };
-    }
+  
 
     internal record NewRecord(int Id);
 }
