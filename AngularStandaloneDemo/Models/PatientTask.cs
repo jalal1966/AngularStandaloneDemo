@@ -11,6 +11,8 @@ namespace AngularStandaloneDemo.Models
 
         [Required]
         public int PatientId { get; set; }
+       
+
         // Make PatientDetails nullable or ensure it's properly initialized
         public PatientDetails? PatientDetails { get; set; }
 
@@ -57,6 +59,7 @@ namespace AngularStandaloneDemo.Models
 
         [ForeignKey("CreatedByNurseId")]
         public virtual User? CreatedByNurse { get; set; }
+
         public int PatientDetailsId { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AngularStandaloneDemo.Enums;
+using DoctorAppointmentSystem.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AngularStandaloneDemo.Models
@@ -32,9 +34,24 @@ namespace AngularStandaloneDemo.Models
 
         [Required]
         public DateTime AdmissionDate { get; set; }
-
+        public DateTime? LastVisitDate { get; set; }
         public required string ProfileImageUrl { get; set; }
  
         public virtual required ICollection<PatientTask> Tasks { get; set; }
+        // Navigation properties
+        public virtual Gender Gender { get; set; }
+        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }
+        public virtual ICollection<Allergy> Allergies { get; set; }
+        public virtual ICollection<Medication> Medications { get; set; }
+        public virtual ICollection<Visit> Visits { get; set; }
+        public virtual ICollection<LabResult> LabResults { get; set; }
+        public virtual ICollection<Immunization> Immunizations { get; set; }
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+
+        public void UpdateLastVisit(DateTime visitDate)
+        {
+            LastVisitDate = visitDate;
+        }
+
     }
 }

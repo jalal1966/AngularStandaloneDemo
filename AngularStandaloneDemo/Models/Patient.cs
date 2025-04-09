@@ -23,19 +23,17 @@ namespace AngularStandaloneDemo.Models
         public int GenderID { get; set; }
         public string? ContactNumber { get; set; }
         public string? Email { get; set; }
-        public string? Address { get; set; }
-        public DateTime RegistrationDate { get; set; }
         public string? EmergencyContactName { get; set; }
         public string? EmergencyContactNumber { get; set; }
         public string? InsuranceProvider { get; set; }
         public string? InsuranceNumber { get; set; }
+        public string? Address { get; set; }
+        public DateTime RegistrationDate { get; set; }
         public int? NursID { get; set; }
         public string? NursName { get; set; }
         public string? PatientDoctorName { get; set; }
         public int? PatientDoctorID { get; set; }
         public DateTime? LastVisitDate { get; set; }
-
-
 
         // Navigation properties
         public virtual Gender Gender { get; set; }
@@ -45,6 +43,7 @@ namespace AngularStandaloneDemo.Models
         public virtual ICollection<Visit> Visits { get; set; }
         public virtual ICollection<LabResult> LabResults { get; set; }
         public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<Immunization> Immunizations { get; set; }
         public virtual ICollection<PatientTask> Tasks { get; set; } = new List<PatientTask>();
 
         public void UpdateLastVisit(DateTime visitDate)

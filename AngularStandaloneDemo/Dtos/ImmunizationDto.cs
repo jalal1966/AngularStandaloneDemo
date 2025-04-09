@@ -1,10 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace AngularStandaloneDemo.Models
+namespace AngularStandaloneDemo.Dtos
 {
-    // Immunization Model
-    public class Immunization
+    internal class ImmunizationDto
     {
         [Key]
         public int Id { get; set; }
@@ -24,12 +22,8 @@ namespace AngularStandaloneDemo.Models
 
         [StringLength(100)]
         public string? AdministeringProvider { get; set; }
-
         public DateTime NextDoseDate { get; set; }
+        public string? Notes { get; set; }
         public string? Manufacturer { get; set; }
-
-        // Navigation Property
-        // [ForeignKey("PatientId")]
-        // public required Patient Patient { get; set; }
     }
 }

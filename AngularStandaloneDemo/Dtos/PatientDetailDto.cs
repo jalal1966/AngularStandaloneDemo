@@ -1,4 +1,6 @@
 ﻿using AngularStandaloneDemo.Enums;
+using AngularStandaloneDemo.Models;
+using DoctorAppointmentSystem.Models;
 
 namespace AngularStandaloneDemo.Dtos
 {
@@ -36,6 +38,20 @@ namespace AngularStandaloneDemo.Dtos
         public required List<MedicationDto> CurrentMedications { get; set; }
         public required List<VisitSummaryDto> RecentVisits { get; set; }
         public required List<LabResultDto> RecentLabResults { get; set; }
-        
+        // Navigation properties
+        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }
+        public virtual ICollection<Medication> Medications { get; set; }
+        public virtual ICollection<Visit> Visits { get; set; }
+        public virtual ICollection<LabResult> LabResults { get; set; }
+        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+        public virtual ICollection<PatientTask> Tasks { get; set; } = new List<PatientTask>();
+        public object Immunizations { get; internal set; }
+
+        public void UpdateLastVisit(DateTime visitDate)
+        {
+            LastVisitDate = visitDate;
+        }
+
+
     }
 }

@@ -69,6 +69,15 @@ namespace AngularStandaloneDemo.Controllers
             existingRecord.SurgicalHistory = medicalRecord.SurgicalHistory;
             existingRecord.FamilyMedicalHistory = medicalRecord.FamilyMedicalHistory;
             existingRecord.SocialHistory = medicalRecord.SocialHistory;
+            existingRecord.RecordDate = medicalRecord.RecordDate;
+            existingRecord.Diagnosis = medicalRecord.Diagnosis;
+            existingRecord.Treatment = medicalRecord.Treatment;
+            existingRecord.Medications = medicalRecord.Medications;
+            existingRecord.Notes = medicalRecord.Notes;
+            existingRecord.IsFollowUpRequired = medicalRecord.IsFollowUpRequired;
+            existingRecord.FollowUpDate = medicalRecord.FollowUpDate;  // Add this line
+            existingRecord.UserID = medicalRecord.UserID;
+
 
             await _context.SaveChangesAsync();
 

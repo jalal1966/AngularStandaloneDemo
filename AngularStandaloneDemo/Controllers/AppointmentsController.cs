@@ -35,6 +35,7 @@ namespace AngularStandaloneDemo.Controllers
                 .Include(a => a.Patient)
                 .Include(a => a.Provider)
                 .Where(a => a.StartTime >= dateNow) // Filtering in the database
+                .OrderBy(a => a.StartTime) // Add this line to sort by date ascending
                 .ToListAsync();
 
             return appointments.Select(MapToDto).ToList() ;

@@ -17,7 +17,7 @@ namespace AngularStandaloneDemo.Models
         public bool IsFollowUpRequired { get; set; }
         public DateTime? FollowUpDate { get; set; }
         public int PatientId { get; set; } // Foreign key
-        //public Patient? Patient { get; set; } // Navigation property
+        public Patient? Patient { get; set; } // Navigation property
          public int UserID { get; set; } // Doctor/provider who created the record
        // public User? User { get; set; }
 

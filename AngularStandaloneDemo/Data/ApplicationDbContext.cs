@@ -26,7 +26,7 @@ namespace AngularStandaloneDemo.Data
         public DbSet<LabResult> LabResults { get; set; }
         public DbSet<Immunization> Immunizations { get; set; }
         public DbSet<Visit> Visits { get; set; }
-        public DbSet<Product> Products { get; set; } = null!;
+       
         public int PatientId { get; private set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,18 +63,16 @@ namespace AngularStandaloneDemo.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MedicalRecord>()
-                .HasOne<Patient>()
-                .WithMany(p => p.MedicalRecords)
-                .HasForeignKey(m => m.Id);
+             .HasOne(m => m.Patient)
+             .WithMany(p => p.MedicalRecords)
+             .HasForeignKey(m => m.PatientId)
+             .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<MedicalRecord>()
                 .HasOne<User>()
                 .WithMany()
-                .HasForeignKey(m => m.UserID);
-           
-            modelBuilder.Entity<Product>()
-                .Property(p => p.Price)
-                .HasPrecision(18, 4); // Allows up to 4 decimal places
+                .HasForeignKey(m => m.UserID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Configure relationships
             // Configure relationships
