@@ -108,7 +108,7 @@ namespace AngularStandaloneDemo.Migrations
                     Specialist = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TelephoneNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Salary = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Salary = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<int>(type: "int", nullable: false),
                     GenderID = table.Column<int>(type: "int", nullable: false),
@@ -159,10 +159,10 @@ namespace AngularStandaloneDemo.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientId = table.Column<int>(type: "int", nullable: false),
-                    VaccineName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    VaccineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AdministrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LotNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    AdministeringProvider = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    LotNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdministeringProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NextDoseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PatientDetailsId = table.Column<int>(type: "int", nullable: true)
@@ -248,76 +248,6 @@ namespace AngularStandaloneDemo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Visit",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    VisitDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProviderName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProviderId = table.Column<int>(type: "int", nullable: true),
-                    VisitType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Assessment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Plan = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Visit", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Visit_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Visit_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Appointments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    ProviderId = table.Column<int>(type: "int", nullable: false),
-                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Appointments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Appointments_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Appointments_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Appointments_Users_ProviderId",
-                        column: x => x.ProviderId,
-                        principalTable: "Users",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Availabilities",
                 columns: table => new
                 {
@@ -346,24 +276,25 @@ namespace AngularStandaloneDemo.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
                     RecordDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Diagnosis = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Treatment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Medications = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsFollowUpRequired = table.Column<bool>(type: "bit", nullable: false),
                     FollowUpDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<int>(type: "int", nullable: false),
                     Height = table.Column<double>(type: "float", nullable: true),
                     Weight = table.Column<double>(type: "float", nullable: true),
-                    BMI = table.Column<double>(type: "float", nullable: true),
+                    Bmi = table.Column<double>(type: "float", nullable: true),
                     BloodType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ChronicConditions = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SurgicalHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FamilyMedicalHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SocialHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                    UserID = table.Column<int>(type: "int", nullable: false),
+                    CreatedByID = table.Column<int>(type: "int", nullable: false),
+                    PatientDetailsId = table.Column<int>(type: "int", nullable: true),
+                    UserID1 = table.Column<int>(type: "int", nullable: true),
+                    UserID2 = table.Column<int>(type: "int", nullable: true),
+                    UserID3 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -380,11 +311,32 @@ namespace AngularStandaloneDemo.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_MedicalRecords_Users_CreatedByID",
+                        column: x => x.CreatedByID,
+                        principalTable: "Users",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_MedicalRecords_Users_UserID",
                         column: x => x.UserID,
                         principalTable: "Users",
                         principalColumn: "UserID",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MedicalRecords_Users_UserID1",
+                        column: x => x.UserID1,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
+                    table.ForeignKey(
+                        name: "FK_MedicalRecords_Users_UserID2",
+                        column: x => x.UserID2,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
+                    table.ForeignKey(
+                        name: "FK_MedicalRecords_Users_UserID3",
+                        column: x => x.UserID3,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
@@ -394,7 +346,7 @@ namespace AngularStandaloneDemo.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Priority = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -406,7 +358,7 @@ namespace AngularStandaloneDemo.Migrations
                     CompletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsRecurring = table.Column<bool>(type: "bit", nullable: false),
                     RecurringPattern = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: false)
+                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -437,6 +389,52 @@ namespace AngularStandaloneDemo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Visit",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    VisitDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProviderName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProviderId = table.Column<int>(type: "int", nullable: true),
+                    VisitType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Assessment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PlanTreatment = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FollowUpRequired = table.Column<bool>(type: "bit", nullable: false),
+                    FollowUpInstructions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FollowUpDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FollowUpReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FollowUpProviderName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FollowUpProviderId = table.Column<int>(type: "int", nullable: true),
+                    FollowUpType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: true),
+                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Visit", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Visit_MedicalRecords_MedicalRecordId",
+                        column: x => x.MedicalRecordId,
+                        principalTable: "MedicalRecords",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Visit_PatientDetails_PatientDetailsId",
+                        column: x => x.PatientDetailsId,
+                        principalTable: "PatientDetails",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Visit_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Diagnosis",
                 columns: table => new
                 {
@@ -457,6 +455,44 @@ namespace AngularStandaloneDemo.Migrations
                         principalTable: "Visit",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Appointments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    ProviderId = table.Column<int>(type: "int", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WaitingListId = table.Column<int>(type: "int", nullable: true),
+                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appointments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Appointments_PatientDetails_PatientDetailsId",
+                        column: x => x.PatientDetailsId,
+                        principalTable: "PatientDetails",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Appointments_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Users_ProviderId",
+                        column: x => x.ProviderId,
+                        principalTable: "Users",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -520,6 +556,11 @@ namespace AngularStandaloneDemo.Migrations
                 column: "ProviderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Appointments_WaitingListId",
+                table: "Appointments",
+                column: "WaitingListId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Availabilities_UserId",
                 table: "Availabilities",
                 column: "UserId");
@@ -550,6 +591,11 @@ namespace AngularStandaloneDemo.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_MedicalRecords_CreatedByID",
+                table: "MedicalRecords",
+                column: "CreatedByID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_MedicalRecords_PatientDetailsId",
                 table: "MedicalRecords",
                 column: "PatientDetailsId");
@@ -563,6 +609,21 @@ namespace AngularStandaloneDemo.Migrations
                 name: "IX_MedicalRecords_UserID",
                 table: "MedicalRecords",
                 column: "UserID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalRecords_UserID1",
+                table: "MedicalRecords",
+                column: "UserID1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalRecords_UserID2",
+                table: "MedicalRecords",
+                column: "UserID2");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalRecords_UserID3",
+                table: "MedicalRecords",
+                column: "UserID3");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Medication_PatientDetailsId",
@@ -595,6 +656,11 @@ namespace AngularStandaloneDemo.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Visit_MedicalRecordId",
+                table: "Visit",
+                column: "MedicalRecordId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Visit_PatientDetailsId",
                 table: "Visit",
                 column: "PatientDetailsId");
@@ -613,11 +679,42 @@ namespace AngularStandaloneDemo.Migrations
                 name: "IX_WaitingList_ProviderId",
                 table: "WaitingList",
                 column: "ProviderId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Appointments_WaitingList_WaitingListId",
+                table: "Appointments",
+                column: "WaitingListId",
+                principalTable: "WaitingList",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Appointments_PatientDetails_PatientDetailsId",
+                table: "Appointments");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Appointments_Patients_PatientId",
+                table: "Appointments");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_WaitingList_Patients_PatientId",
+                table: "WaitingList");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Appointments_Users_ProviderId",
+                table: "Appointments");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_WaitingList_Users_ProviderId",
+                table: "WaitingList");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Appointments_WaitingList_WaitingListId",
+                table: "Appointments");
+
             migrationBuilder.DropTable(
                 name: "Allergy");
 
@@ -634,9 +731,6 @@ namespace AngularStandaloneDemo.Migrations
                 name: "LabResult");
 
             migrationBuilder.DropTable(
-                name: "MedicalRecords");
-
-            migrationBuilder.DropTable(
                 name: "Medication");
 
             migrationBuilder.DropTable(
@@ -646,13 +740,10 @@ namespace AngularStandaloneDemo.Migrations
                 name: "PatientTasks");
 
             migrationBuilder.DropTable(
-                name: "WaitingList");
-
-            migrationBuilder.DropTable(
                 name: "Visit");
 
             migrationBuilder.DropTable(
-                name: "Appointments");
+                name: "MedicalRecords");
 
             migrationBuilder.DropTable(
                 name: "PatientDetails");
@@ -662,6 +753,12 @@ namespace AngularStandaloneDemo.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "WaitingList");
+
+            migrationBuilder.DropTable(
+                name: "Appointments");
         }
     }
 }

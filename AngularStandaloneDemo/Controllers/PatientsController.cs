@@ -19,11 +19,11 @@ namespace AngularStandaloneDemo.Controllers
     [ApiController]
     public class PatientsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IAuthService _authService;
 
-        public PatientsController(ApplicationDbContext context, IConfiguration configuration, IAuthService authService)
+        public PatientsController(Data.ApplicationDbContext context, IConfiguration configuration, IAuthService authService)
         {
             _context = context;
             _configuration = configuration;
@@ -108,7 +108,7 @@ namespace AngularStandaloneDemo.Controllers
                 // Medical record data
                 Height = patient.MedicalRecord?.Height,
                 Weight = patient.MedicalRecord?.Weight,
-                BMI = patient.MedicalRecord?.BMI,
+                BMI = patient.MedicalRecord?.Bmi,
                 BloodType = patient.MedicalRecord?.BloodType,
 
                 // Related data

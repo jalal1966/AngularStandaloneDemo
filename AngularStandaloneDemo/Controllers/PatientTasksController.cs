@@ -11,9 +11,9 @@ namespace AngularStandaloneDemo.Controllers
     [Route("api/patient-tasks")]
     public class PatientTasksController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
        
-        public PatientTasksController(ApplicationDbContext context)
+        public PatientTasksController(Data.ApplicationDbContext context)
         {
             _context = context;
         }
@@ -37,7 +37,7 @@ namespace AngularStandaloneDemo.Controllers
         {
             return await _context.PatientTasks
                 .Where(t => t.PatientId == patientId)
-                .Include(t => t.AssignedNurse)
+                .Include(t => t.AssignedToNurseId)
                 .OrderByDescending(t => t.Priority)
                 .ThenBy(t => t.DueDate)
                 .ToListAsync();
@@ -52,8 +52,8 @@ namespace AngularStandaloneDemo.Controllers
                 PatientId = taskDto.PatientId,
                 Title = taskDto.Title,
                 Description = taskDto.Description,
-                Priority = taskDto.Priority,
-                Status = Enums.TaskStatus.NotStarted, 
+                Priority = (int)taskDto.Priority,
+                Status = (int)Enums.TaskStatus.NotStarted, 
                 DueDate = taskDto.DueDate,
                 AssignedToNurseId = taskDto.AssignedToNurseId,
                 CreatedByNurseId = taskDto.CreatedByNurseId,
@@ -74,7 +74,7 @@ namespace AngularStandaloneDemo.Controllers
         {
             var task = await _context.PatientTasks
                 .Include(t => t.Patient)
-                .Include(t => t.AssignedNurse)
+                .Include(t => t.AssignedToNurseId)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (task == null)
@@ -96,7 +96,7 @@ namespace AngularStandaloneDemo.Controllers
 
             task.LastModifiedDate = DateTime.UtcNow;
 
-            if (task.Status == Enums.TaskStatus.Completed && !task.CompletedDate.HasValue)
+            if (task.Status == (int)Enums.TaskStatus.Completed && !task.CompletedDate.HasValue)
             {
                 task.CompletedDate = DateTime.UtcNow;
             }
@@ -133,7 +133,7 @@ namespace AngularStandaloneDemo.Controllers
                 return NotFound();
             }
 
-            task.Status = ConvertToCustomTaskStatus(statusDto.Status);  // Convert before assigning
+            task.Status = (int)ConvertToCustomTaskStatus(statusDto.Status);  // Convert before assigning
             // task.Status = statusDto.Status;
             task.LastModifiedDate = DateTime.UtcNow;
 

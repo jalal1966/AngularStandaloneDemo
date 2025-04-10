@@ -1,6 +1,5 @@
 ﻿using AngularStandaloneDemo.Enums;
 using AngularStandaloneDemo.Models;
-using DoctorAppointmentSystem.Models;
 
 namespace AngularStandaloneDemo.Dtos
 {

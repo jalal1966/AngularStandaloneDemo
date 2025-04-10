@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AngularStandaloneDemo.Data;
 using AngularStandaloneDemo.Dtos;
 using AngularStandaloneDemo.Enums;
 using DoctorAppointmentSystem.DTOs;
-using DoctorAppointmentSystem.Models;
 using AngularStandaloneDemo.Models;
 using System.Data;
 namespace AngularStandaloneDemo.Controllers
@@ -13,12 +11,12 @@ namespace AngularStandaloneDemo.Controllers
     [Route("api/[controller]")]
     public class AppointmentsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
         private readonly ILogger<AppointmentsController> _logger; // If you want logging
 
         // Single constructor with all required dependencies
         public AppointmentsController(
-            ApplicationDbContext context,
+            Data.ApplicationDbContext context,
             ILogger<AppointmentsController> logger = null) // Make logger optional if not all controllers use it
         {
             _context = context;
@@ -63,7 +61,7 @@ namespace AngularStandaloneDemo.Controllers
             var dateNow = DateTime.UtcNow.Date; // Define inside method
             var appointments = await _context.Appointments
                 .Include(a => a.Patient)
-                .Where(a => a.ProviderId == providerId && a.StartTime >= dateNow && a.Status != AppointmentStatus.Cancelled)
+                .Where(a => a.ProviderId == providerId && a.StartTime >= dateNow && a.Status != (int)AppointmentStatus.Cancelled)
                 .ToListAsync();
 
             return appointments.Select(MapToDto).ToList();
@@ -85,7 +83,7 @@ namespace AngularStandaloneDemo.Controllers
         [HttpGet("available-slots")]
         public async Task<ActionResult<IEnumerable<DateTime>>> GetAvailableSlots(
             [FromQuery] int providerId,
-            [FromQuery] DateTime date)
+            [FromQuery] DateTime date, AppointmentStatus appointmentStatus)
         {
             // Get provider's availability for the specified date
             var availabilities = await _context.Availabilities
@@ -103,7 +101,7 @@ namespace AngularStandaloneDemo.Controllers
             var bookedAppointments = await _context.Appointments
                 .Where(a => a.ProviderId == providerId &&
                        a.StartTime.Date == date.Date &&
-                       a.Status != AppointmentStatus.Cancelled)
+                       a.Status != (int)AppointmentStatus.Cancelled)
                 .ToListAsync();
 
             // Calculate available slots (30-minute intervals)
@@ -205,7 +203,7 @@ namespace AngularStandaloneDemo.Controllers
                 // More comprehensive conflicting appointment check
                 var conflictingAppointment = await _context.Appointments
                     .AnyAsync(a => a.ProviderId == appointmentDto.ProviderId &&
-                               a.Status != AppointmentStatus.Cancelled &&
+                               a.Status != (int)AppointmentStatus.Cancelled &&
                                a.StartTime < appointmentDto.EndTime &&
                                a.EndTime > appointmentDto.StartTime);
 
@@ -234,13 +232,13 @@ namespace AngularStandaloneDemo.Controllers
                     Provider = provider,
                     StartTime = appointmentDto.StartTime,
                     EndTime = appointmentDto.EndTime,
-                    Type = Enum.Parse<AppointmentType>(appointmentDto.Type),
-                    Status = Enum.Parse<AppointmentStatus>(appointmentDto.Status),
+                    Type = (int)Enum.Parse<AppointmentType>(appointmentDto.Type),
+                    Status = (int)Enum.Parse<AppointmentStatus>(appointmentDto.Status),
                     Notes = appointmentDto.Notes,
                 };
 
                 // Update patient's last visit date
-                if (appointment.Status is AppointmentStatus.Completed or AppointmentStatus.Scheduled)
+                if (appointment.Status is (int)AppointmentStatus.Completed or (int)AppointmentStatus.Scheduled)
                 {
                     patient.LastVisitDate = appointment.StartTime;
                 }
@@ -252,11 +250,11 @@ namespace AngularStandaloneDemo.Controllers
                 var waitingRequest = await _context.WaitingList
                     .FirstOrDefaultAsync(w => w.PatientId == appointment.PatientId &&
                                        w.ProviderId == appointment.ProviderId &&
-                                       w.Status == WaitingStatus.Active);
+                                       w.Status == (int)WaitingStatus.Activeve);
 
                 if (waitingRequest != null)
                 {
-                    waitingRequest.Status = WaitingStatus.Fulfilled;
+                    waitingRequest.Status = (int)WaitingStatus.Fulfilled;
                     await _context.SaveChangesAsync();
                 }
 
@@ -293,8 +291,8 @@ namespace AngularStandaloneDemo.Controllers
             appointment.StartTime = appointmentDto.StartTime;
             appointment.EndTime = appointmentDto.EndTime;
             appointment.Notes = appointmentDto.Notes;
-            appointment.Type = Enum.Parse<AppointmentType>(appointmentDto.Type);
-            appointment.Status = Enum.Parse<AppointmentStatus>(appointmentDto.Status);
+            appointment.Type = (int)Enum.Parse<AppointmentType>(appointmentDto.Type);
+            appointment.Status = (int)Enum.Parse<AppointmentStatus>(appointmentDto.Status);
 
             try
             {
@@ -329,7 +327,7 @@ namespace AngularStandaloneDemo.Controllers
             {
                 return BadRequest("Invalid status value.");
             }
-            appointment.Status = parsedStatus;
+            appointment.Status =(int)parsedStatus;
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -345,7 +343,7 @@ namespace AngularStandaloneDemo.Controllers
             }
 
             // Soft delete by changing status to Cancelled
-            appointment.Status = AppointmentStatus.Cancelled;
+            appointment.Status = (int)AppointmentStatus.Cancelled;
             await _context.SaveChangesAsync();
 
             return NoContent();

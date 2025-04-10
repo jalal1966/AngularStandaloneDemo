@@ -1,5 +1,4 @@
 ﻿using AngularStandaloneDemo.Enums;
-using DoctorAppointmentSystem.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

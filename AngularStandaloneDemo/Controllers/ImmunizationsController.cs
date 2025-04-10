@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AngularStandaloneDemo.Data;
 using AngularStandaloneDemo.Models;
@@ -14,9 +9,9 @@ namespace AngularStandaloneDemo.Controllers
     [Route("api/patients/{patientId}/immunizations")]
     public class ImmunizationsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
 
-        public ImmunizationsController(ApplicationDbContext context)
+        public ImmunizationsController(Data.ApplicationDbContext context)
         {
             _context = context;
         }

@@ -1,23 +1,49 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
 
-namespace AngularStandaloneDemo.Models
+namespace AngularStandaloneDemo.Models;
+
+public partial class Visit
 {
-    // Visit Model (for tracking appointments and encounters)
-    public class Visit
-    {
-        public int Id { get; set; }
-        public int PatientId { get; set; }
-        public DateTime VisitDate { get; set; }
-        public string? ProviderName { get; set; }
-        public int? ProviderId { get; set; }
-        public string? VisitType { get; set; } // Primary Care, Specialist, Emergency, etc.
-        public string? Reason { get; set; }
-        public string? Assessment { get; set; }
-        public string? Plan { get; set; }
-        public string? Notes { get; set; }
+    public int Id { get; set; }
 
-        // Navigation property
-        public virtual Patient? Patient { get; set; }
-        public virtual required ICollection<Diagnosis> Diagnoses { get; set; }
-    }
+    public int PatientId { get; set; }
+
+    public DateTime VisitDate { get; set; }
+
+    public string? ProviderName { get; set; }
+
+    public int? ProviderId { get; set; }
+
+    public string? VisitType { get; set; }
+
+    public string? Reason { get; set; }
+
+    public string? Assessment { get; set; }
+
+    public string? PlanTreatment { get; set; }
+
+    public string? Notes { get; set; }
+
+    public bool FollowUpRequired { get; set; }
+
+    public string? FollowUpInstructions { get; set; }
+
+    public DateTime? FollowUpDate { get; set; }
+
+    public string? FollowUpReason { get; set; }
+
+    public string? FollowUpProviderName { get; set; }
+
+    public int? FollowUpProviderId { get; set; }
+
+    public string? FollowUpType { get; set; }
+
+    public int? MedicalRecordId { get; set; }
+
+    public virtual ICollection<Diagnosis> Diagnoses { get; set; } = new List<Diagnosis>();
+
+    public virtual MedicalRecord? MedicalRecord { get; set; }
+
+    public virtual Patient Patient { get; set; } = null!;
 }

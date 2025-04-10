@@ -13,9 +13,9 @@ namespace AngularStandaloneDemo.Controllers
     [ApiController]
     public class VisitsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
 
-        public VisitsController(ApplicationDbContext context)
+        public VisitsController(Data.ApplicationDbContext context)
         {
             _context = context;
         }

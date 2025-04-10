@@ -1,19 +1,21 @@
-﻿using AngularStandaloneDemo.Enums;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace AngularStandaloneDemo.Models
+namespace AngularStandaloneDemo.Models;
+
+public partial class Availability
 {
-    public class Availability
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
-        public int Id { get; set; }
-        public int UserId { get; set; }
-        public User User { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public bool IsRecurring { get; set; }
-        public RecurrencePattern RecurrencePattern { get; set; }
-    }
+    public int Id { get; set; }
+
+    public int UserId { get; set; }
+
+    public DateTime StartTime { get; set; }
+
+    public DateTime EndTime { get; set; }
+
+    public bool IsRecurring { get; set; }
+
+    public int RecurrencePattern { get; set; }
+
+    public virtual User User { get; set; } = null!;
 }

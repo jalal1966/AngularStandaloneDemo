@@ -1,8 +1,8 @@
 ﻿using AngularStandaloneDemo.Models;
-using DoctorAppointmentSystem.Models;
 using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.EntityFrameworkCore;
 using AngularStandaloneDemo.Dtos;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AngularStandaloneDemo.Data
 {
@@ -26,7 +26,8 @@ namespace AngularStandaloneDemo.Data
         public DbSet<LabResult> LabResults { get; set; }
         public DbSet<Immunization> Immunizations { get; set; }
         public DbSet<Visit> Visits { get; set; }
-       
+        public DbSet<Diagnosis> Diagnosis { get; set; }
+
         public int PatientId { get; private set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,8 +38,13 @@ namespace AngularStandaloneDemo.Data
             // ✅ Ensure the correct table name
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<Patient>().ToTable("Patients");
-            modelBuilder.Entity<PatientDetails>().ToTable("PatientDetails");
+            //modelBuilder.Entity<PatientDetails>().ToTable("PatientDetails");
             modelBuilder.Entity<PatientTask>().ToTable("PatientTasks");
+
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.Salary)
+                .HasPrecision(18, 2);
 
             modelBuilder.Entity<User>()
                .HasKey(u => u.UserID); // Ensure UserID is properly configured as the primary key
@@ -57,7 +63,7 @@ namespace AngularStandaloneDemo.Data
 
 
             modelBuilder.Entity<WaitingList>()
-                .HasOne(w => w.Appointment)
+                .HasOne(w => w.IdNavigation)
                 .WithMany()
                 .HasForeignKey(m => m.Id)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -67,38 +73,53 @@ namespace AngularStandaloneDemo.Data
              .WithMany(p => p.MedicalRecords)
              .HasForeignKey(m => m.PatientId)
              .OnDelete(DeleteBehavior.Cascade);
+           
+            
 
             modelBuilder.Entity<MedicalRecord>()
+            .HasOne(m => m.User)
+             .WithMany()
+             .HasForeignKey(m => m.UserID)
+             .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MedicalRecord>()
+                .HasOne(m => m.CreatedBy)
+                .WithMany()
+                .HasForeignKey(m => m.CreatedByID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            /*modelBuilder.Entity<MedicalRecord>()
                 .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(m => m.UserID)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict);*/
 
             // Configure relationships
             // Configure relationships
 
 
-            modelBuilder.Entity<PatientDetails>()
+            /*modelBuilder.Entity<PatientDetails>()
                 .HasMany(p => p.Tasks)
                 .WithOne(t => t.PatientDetails)
                 .HasForeignKey(t => t.PatientDetailsId)
-             .IsRequired(false); // Make the relationship optional
+             .IsRequired(false);*/ // Make the relationship optional
 
             modelBuilder.Entity<PatientTask>()
                 .HasOne( pt => pt.Patient)  // Correct navigation property
-                .WithMany(p => p.Tasks)  // Ensure Patient has Tasks collection
+                .WithMany(p => p.PatientTasks)  // Ensure Patient has Tasks collection
                 .HasForeignKey(pt => pt.PatientId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PatientTask>()
-                .HasOne(pt => pt.AssignedNurse)
-                .WithMany(n => n.AssignedTasks)
+                .HasOne(pt => pt.AssignedToNurse)
+                .WithMany(n => n.PatientTaskAssignedToNurses)
                 .HasForeignKey(pt => pt.AssignedToNurseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<PatientTask>()
                 .HasOne(pt => pt.CreatedByNurse)
-                .WithMany(n => n.CreatedTasks)
+                .WithMany(n => n.PatientTaskCreatedByNurses)
                 .HasForeignKey(pt => pt.CreatedByNurseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -112,6 +133,7 @@ namespace AngularStandaloneDemo.Data
         public DbSet<AngularStandaloneDemo.Models.LabResult> LabResult { get; set; } = default!;
         public DbSet<AngularStandaloneDemo.Models.Immunization> Immunization { get; set; } = default!;
         public DbSet<AngularStandaloneDemo.Models.Visit> Visit { get; set; } = default!;
+        
     };
    
 }

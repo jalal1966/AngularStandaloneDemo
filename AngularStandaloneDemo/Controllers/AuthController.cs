@@ -21,11 +21,11 @@ namespace AngularStandaloneDemo.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
         private readonly IConfiguration _configuration;
         private readonly IAuthService _authService;
 
-        public AuthController(ApplicationDbContext context, IConfiguration configuration, IAuthService authService)
+        public AuthController(Data.ApplicationDbContext context, IConfiguration configuration, IAuthService authService)
         {
             _context = context;
             _configuration = configuration;
@@ -82,7 +82,7 @@ namespace AngularStandaloneDemo.Controllers
                     TelephoneNo = model.TelephoneNo ?? string.Empty,
                     Salary = model.Salary,
                     Note = model.Note ?? string.Empty,
-                    JobTitleID = model.JobTitleID,
+                    JobTitleID = (int)model.JobTitleID,
                     GenderID = model.GenderID,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
@@ -115,7 +115,7 @@ namespace AngularStandaloneDemo.Controllers
             {
                 // Query users with the specified JobTitleId
                 var users = await _context.Users
-                    .Where(u => u.JobTitleID == id)
+                    .Where(u => u.JobTitleID == (int)id)
                     .Select(u => new
                     {
                         u.UserID,

@@ -20,13 +20,13 @@ namespace AngularStandaloneDemo.Services
 
     public class AuthService : IAuthService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
         private readonly TokenService _tokenService;
         private readonly IEmailService _emailService;
         private readonly Dictionary<string, string> _passwordResetTokens = new Dictionary<string, string>();
 
         public AuthService(
-            ApplicationDbContext context,
+            Data.ApplicationDbContext context,
             TokenService tokenService,
             IEmailService emailService)
         {

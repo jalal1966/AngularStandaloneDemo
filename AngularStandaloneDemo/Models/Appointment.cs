@@ -1,26 +1,29 @@
-﻿using AngularStandaloneDemo.Enums;
-using AngularStandaloneDemo.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace DoctorAppointmentSystem.Models
+namespace AngularStandaloneDemo.Models;
+
+public partial class Appointment
 {
-    public class Appointment
-    {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
-        public int Id { get; set; }
-        public int PatientId { get; set; }
-        public int ProviderId { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public AppointmentStatus Status { get; set; }
-        public AppointmentType Type { get; set; }
-        public required string Notes { get; set; }
+    public int Id { get; set; }
 
-        // Make navigation properties optional by adding '?'
-        public virtual required Patient Patient { get; set; }
-        public virtual required User Provider { get; set; }    
+    public int PatientId { get; set; }
 
-    }
+    public int ProviderId { get; set; }
+
+    public DateTime StartTime { get; set; }
+
+    public DateTime EndTime { get; set; }
+
+    public int Status { get; set; }
+
+    public int Type { get; set; }
+
+    public string Notes { get; set; } = null!;
+
+    public virtual Patient Patient { get; set; } = null!;
+
+    public virtual User Provider { get; set; } = null!;
+
+    public virtual WaitingList? WaitingList { get; set; }
 }

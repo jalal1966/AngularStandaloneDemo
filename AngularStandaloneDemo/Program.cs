@@ -35,7 +35,7 @@ internal class Program
         });
 
         // Add services to the container
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        builder.Services.AddDbContext<AngularStandaloneDemo.Data.ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         // Add Identity
@@ -47,7 +47,7 @@ internal class Program
             options.Password.RequireNonAlphanumeric = true;
             options.Password.RequiredLength = 8;
         })
-        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddEntityFrameworkStores<AngularStandaloneDemo.Data.ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
         // Register services from Startup.ConfigureServices

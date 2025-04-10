@@ -41,7 +41,7 @@ namespace AngularStandaloneDemo.Controllers
                 FirstName = patient.FirstName,
                 LastName = patient.LastName,
                 DateOfBirth = patient.DateOfBirth,
-                GenderID = patient.GenderID,
+                GenderID = (int)patient.GenderID,
                 Gender = (Gender)patient.GenderID, // Cast the integer to the enum
                 //GenderName = patient.Gender?.Name,
                 ContactNumber = patient.ContactNumber,

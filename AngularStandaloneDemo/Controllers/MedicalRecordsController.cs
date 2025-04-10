@@ -14,9 +14,9 @@ namespace AngularStandaloneDemo.Controllers
     [Route("api/patients/{patientId}/medical-record")]
     public class MedicalRecordsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly Data.ApplicationDbContext _context;
 
-        public MedicalRecordsController(ApplicationDbContext context)
+        public MedicalRecordsController(Data.ApplicationDbContext context)
         {
             _context = context;
         }
@@ -63,16 +63,14 @@ namespace AngularStandaloneDemo.Controllers
             // Update properties
             existingRecord.Height = medicalRecord.Height;
             existingRecord.Weight = medicalRecord.Weight;
-            existingRecord.BMI = medicalRecord.BMI;
+            existingRecord.Bmi = medicalRecord.Bmi;
             existingRecord.BloodType = medicalRecord.BloodType;
             existingRecord.ChronicConditions = medicalRecord.ChronicConditions;
             existingRecord.SurgicalHistory = medicalRecord.SurgicalHistory;
             existingRecord.FamilyMedicalHistory = medicalRecord.FamilyMedicalHistory;
             existingRecord.SocialHistory = medicalRecord.SocialHistory;
             existingRecord.RecordDate = medicalRecord.RecordDate;
-            existingRecord.Diagnosis = medicalRecord.Diagnosis;
-            existingRecord.Treatment = medicalRecord.Treatment;
-            existingRecord.Medications = medicalRecord.Medications;
+            existingRecord.Visits = medicalRecord.Visits;
             existingRecord.Notes = medicalRecord.Notes;
             existingRecord.IsFollowUpRequired = medicalRecord.IsFollowUpRequired;
             existingRecord.FollowUpDate = medicalRecord.FollowUpDate;  // Add this line

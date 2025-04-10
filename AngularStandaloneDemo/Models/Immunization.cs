@@ -1,35 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace AngularStandaloneDemo.Models
+namespace AngularStandaloneDemo.Models;
+
+public partial class Immunization
 {
-    // Immunization Model
-    public class Immunization
-    {
-        [Key]
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        public int PatientId { get; set; }
+    public int PatientId { get; set; }
 
-        [Required]
-        [StringLength(100)]
-        public string? VaccineName { get; set; }
+    public string VaccineName { get; set; } = null!;
 
-        [Required]
-        public DateTime AdministrationDate { get; set; }
+    public DateTime AdministrationDate { get; set; }
 
-        [StringLength(50)]
-        public string? LotNumber { get; set; }
+    public string? LotNumber { get; set; }
 
-        [StringLength(100)]
-        public string? AdministeringProvider { get; set; }
+    public string? AdministeringProvider { get; set; }
 
-        public DateTime NextDoseDate { get; set; }
-        public string? Manufacturer { get; set; }
+    public DateTime NextDoseDate { get; set; }
 
-        // Navigation Property
-        // [ForeignKey("PatientId")]
-        // public required Patient Patient { get; set; }
-    }
+    public string? Manufacturer { get; set; }
+
+    public virtual Patient Patient { get; set; } = null!;
 }

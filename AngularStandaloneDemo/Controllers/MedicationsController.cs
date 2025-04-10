@@ -15,9 +15,9 @@ namespace AngularStandaloneDemo.Controllers
         [Route("api/patients/{patientId}/medications")]
         public class MedicationsController : ControllerBase
         {
-            private readonly ApplicationDbContext _context;
+            private readonly Data.ApplicationDbContext _context;
 
-            public MedicationsController(ApplicationDbContext context)
+            public MedicationsController(Data.ApplicationDbContext context)
             {
                 _context = context;
             }

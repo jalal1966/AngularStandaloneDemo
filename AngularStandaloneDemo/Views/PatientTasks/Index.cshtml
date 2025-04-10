@@ -52,7 +52,7 @@
                 @Html.DisplayNameFor(model => model.Patient)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AssignedNurse)
+                    @Html.DisplayNameFor(model => model.AssignedToNurse)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreatedByNurse)
@@ -97,7 +97,7 @@
                 @Html.DisplayFor(modelItem => item.Patient.FirstName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AssignedNurse.Email)
+                @Html.DisplayFor(modelItem => item.AssignedToNurse.Email)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CreatedByNurse.Email)

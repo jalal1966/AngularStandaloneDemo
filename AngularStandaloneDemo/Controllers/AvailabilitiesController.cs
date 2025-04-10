@@ -14,9 +14,9 @@ namespace AngularStandaloneDemo.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AvailabilitiesController(ApplicationDbContext context) : ControllerBase
+    public class AvailabilitiesController(Data.ApplicationDbContext context) : ControllerBase
     {
-        private readonly ApplicationDbContext _context = context;
+        private readonly Data.ApplicationDbContext _context = context;
 
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IEnumerable<Availability>>> GetAvailabilityByUser(int userId)
@@ -113,7 +113,7 @@ namespace AngularStandaloneDemo.Controllers
                 .Where(a => a.ProviderId == userId &&
                        a.StartTime >= startDate &&
                        a.EndTime <= endDate &&
-                       a.Status != AppointmentStatus.Cancelled)
+                       a.Status != (int)AppointmentStatus.Cancelled)
                 .ToListAsync();
 
             // Calculate available slots by date
@@ -168,18 +168,18 @@ namespace AngularStandaloneDemo.Controllers
             // For recurring availabilities, check the pattern
             switch (availability.RecurrencePattern)
             {
-                case RecurrencePattern.Daily:
+                case (int)RecurrencePattern.Daily:
                     return true;
 
-                case RecurrencePattern.Weekly:
+                case (int)RecurrencePattern.Weekly:
                     return availability.StartTime.DayOfWeek == date.DayOfWeek;
 
-                case RecurrencePattern.BiWeekly:
+                case (int)RecurrencePattern.BiWeekly:
                     // Calculate week number difference
                     int weeksDiff = (int)Math.Floor((date - availability.StartTime).TotalDays / 7);
                     return availability.StartTime.DayOfWeek == date.DayOfWeek && weeksDiff % 2 == 0;
 
-                case RecurrencePattern.Monthly:
+                case  (int)RecurrencePattern.Monthly:
                     return availability.StartTime.Day == date.Day;
 
                 default:
