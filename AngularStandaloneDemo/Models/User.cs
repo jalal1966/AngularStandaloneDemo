@@ -47,14 +47,6 @@ public partial class User
 
     public virtual ICollection<Availability> Availabilities { get; set; } = new List<Availability>();
 
-    public virtual ICollection<MedicalRecord> MedicalRecordUserId1Navigations { get; set; } = new List<MedicalRecord>();
 
-    public virtual ICollection<MedicalRecord> MedicalRecordUsers { get; set; } = new List<MedicalRecord>();
 
-    public virtual ICollection<PatientTask> PatientTaskAssignedToNurses { get; set; } = new List<PatientTask>();
-
-    public virtual ICollection<PatientTask> PatientTaskCreatedByNurses { get; set; } = new List<PatientTask>();
-
-    public virtual ICollection<WaitingList> WaitingLists { get; set; } = new List<WaitingList>();
-    public ICollection<MedicalRecord> MedicalRecords { get; set; }
 }

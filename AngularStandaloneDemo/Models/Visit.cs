@@ -43,7 +43,6 @@ public partial class Visit
 
     public virtual ICollection<Diagnosis> Diagnoses { get; set; } = new List<Diagnosis>();
 
-    public virtual MedicalRecord? MedicalRecord { get; set; }
 
-    public virtual Patient Patient { get; set; } = null!;
+    public virtual ICollection<Medication> Medications { get; set; } = new List<Medication>();
 }

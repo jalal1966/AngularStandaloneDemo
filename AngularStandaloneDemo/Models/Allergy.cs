@@ -19,5 +19,5 @@ public partial class Allergy
 
     public DateTime DateIdentified { get; set; }
 
-    public virtual Patient Patient { get; set; } = null!;
+    // public virtual Patient Patient { get; set; } = null!;
 }

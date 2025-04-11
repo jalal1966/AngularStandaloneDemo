@@ -35,16 +35,14 @@ public partial class MedicalRecord
 
     public string? SocialHistory { get; set; }
 
-    [ForeignKey("User")]
+  
     public int UserID { get; set; }
-    public User User { get; set; }
 
-    [ForeignKey("CreatedBy")]
-    public int CreatedByID { get; set; }
-    public User CreatedBy { get; set; }
-
-
-    public virtual Patient Patient { get; set; } = null!;
 
     public virtual ICollection<Visit> Visits { get; set; } = new List<Visit>();
+    public virtual ICollection<Allergy> Allergies { get; set; } = new List<Allergy>();
+    public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>();
+  
+         public virtual ICollection<Immunization> Immunizations { get; set; } = new List<Immunization>();
+
 }

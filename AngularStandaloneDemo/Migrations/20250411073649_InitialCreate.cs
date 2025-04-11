@@ -12,25 +12,45 @@ namespace AngularStandaloneDemo.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "PatientDetails",
+                name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RoomNumber = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    BedNumber = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
-                    PrimaryDiagnosis = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    AdmissionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastVisitDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Gender = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PatientDetails", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -85,8 +105,7 @@ namespace AngularStandaloneDemo.Migrations
                     NursName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PatientDoctorName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PatientDoctorID = table.Column<int>(type: "int", nullable: true),
-                    LastVisitDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Gender = table.Column<int>(type: "int", nullable: false)
+                    LastVisitDate = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -123,124 +142,132 @@ namespace AngularStandaloneDemo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Allergy",
+                name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    AllergyType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Reaction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Severity = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateIdentified = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Allergy", x => x.Id);
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Allergy_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Allergy_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Immunization",
+                name: "AspNetUserClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    VaccineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AdministrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LotNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AdministeringProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NextDoseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Immunization", x => x.Id);
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Immunization_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Immunization_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
+                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "LabResult",
+                name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    TestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TestName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Result = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReferenceRange = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderingProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LabResult", x => x.Id);
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_LabResult_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_LabResult_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
+                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Medication",
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PatientDetails",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Dosage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Frequency = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PrescribingProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Purpose = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RoomNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BedNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrimaryDiagnosis = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdmissionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastVisitDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Medication", x => x.Id);
+                    table.PrimaryKey("PK_PatientDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Medication_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Medication_Patients_PatientId",
+                        name: "FK_PatientDetails_Patients_PatientId",
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
@@ -290,11 +317,7 @@ namespace AngularStandaloneDemo.Migrations
                     FamilyMedicalHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SocialHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserID = table.Column<int>(type: "int", nullable: false),
-                    CreatedByID = table.Column<int>(type: "int", nullable: false),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true),
-                    UserID1 = table.Column<int>(type: "int", nullable: true),
-                    UserID2 = table.Column<int>(type: "int", nullable: true),
-                    UserID3 = table.Column<int>(type: "int", nullable: true)
+                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -304,88 +327,92 @@ namespace AngularStandaloneDemo.Migrations
                         column: x => x.PatientDetailsId,
                         principalTable: "PatientDetails",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_MedicalRecords_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_MedicalRecords_Users_CreatedByID",
-                        column: x => x.CreatedByID,
-                        principalTable: "Users",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MedicalRecords_Users_UserID",
-                        column: x => x.UserID,
-                        principalTable: "Users",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_MedicalRecords_Users_UserID1",
-                        column: x => x.UserID1,
-                        principalTable: "Users",
-                        principalColumn: "UserID");
-                    table.ForeignKey(
-                        name: "FK_MedicalRecords_Users_UserID2",
-                        column: x => x.UserID2,
-                        principalTable: "Users",
-                        principalColumn: "UserID");
-                    table.ForeignKey(
-                        name: "FK_MedicalRecords_Users_UserID3",
-                        column: x => x.UserID3,
-                        principalTable: "Users",
-                        principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
-                name: "PatientTasks",
+                name: "Allergy",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientId = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Priority = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AssignedToNurseId = table.Column<int>(type: "int", nullable: false),
-                    CreatedByNurseId = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CompletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsRecurring = table.Column<bool>(type: "bit", nullable: false),
-                    RecurringPattern = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                    AllergyType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Reaction = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Severity = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateIdentified = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PatientTasks", x => x.Id);
+                    table.PrimaryKey("PK_Allergy", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PatientTasks_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
+                        name: "FK_Allergy_MedicalRecords_MedicalRecordId",
+                        column: x => x.MedicalRecordId,
+                        principalTable: "MedicalRecords",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Immunization",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    VaccineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdministrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LotNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdministeringProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NextDoseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Immunization", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Immunization_MedicalRecords_MedicalRecordId",
+                        column: x => x.MedicalRecordId,
+                        principalTable: "MedicalRecords",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_PatientTasks_Patients_PatientId",
+                        name: "FK_Immunization_Patients_PatientId",
                         column: x => x.PatientId,
                         principalTable: "Patients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LabResult",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    TestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TestName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Result = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReferenceRange = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderingProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LabResult", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PatientTasks_Users_AssignedToNurseId",
-                        column: x => x.AssignedToNurseId,
-                        principalTable: "Users",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_LabResult_MedicalRecords_MedicalRecordId",
+                        column: x => x.MedicalRecordId,
+                        principalTable: "MedicalRecords",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_PatientTasks_Users_CreatedByNurseId",
-                        column: x => x.CreatedByNurseId,
-                        principalTable: "Users",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_LabResult_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -410,8 +437,7 @@ namespace AngularStandaloneDemo.Migrations
                     FollowUpProviderName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FollowUpProviderId = table.Column<int>(type: "int", nullable: true),
                     FollowUpType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MedicalRecordId = table.Column<int>(type: "int", nullable: true),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -421,17 +447,6 @@ namespace AngularStandaloneDemo.Migrations
                         column: x => x.MedicalRecordId,
                         principalTable: "MedicalRecords",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Visit_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Visit_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -452,6 +467,38 @@ namespace AngularStandaloneDemo.Migrations
                     table.ForeignKey(
                         name: "FK_Diagnosis_Visit_VisitId",
                         column: x => x.VisitId,
+                        principalTable: "Visit",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Medication",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Dosage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Frequency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PrescribingProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Purpose = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Medication", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Medication_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Medication_Visit_Id",
+                        column: x => x.Id,
                         principalTable: "Visit",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -505,7 +552,8 @@ namespace AngularStandaloneDemo.Migrations
                     RequestedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -516,6 +564,11 @@ namespace AngularStandaloneDemo.Migrations
                         principalTable: "Appointments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_WaitingList_PatientDetails_PatientDetailsId",
+                        column: x => x.PatientDetailsId,
+                        principalTable: "PatientDetails",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_WaitingList_Patients_PatientId",
                         column: x => x.PatientId,
@@ -531,14 +584,9 @@ namespace AngularStandaloneDemo.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Allergy_PatientDetailsId",
+                name: "IX_Allergy_MedicalRecordId",
                 table: "Allergy",
-                column: "PatientDetailsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Allergy_PatientId",
-                table: "Allergy",
-                column: "PatientId");
+                column: "MedicalRecordId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_PatientDetailsId",
@@ -561,6 +609,45 @@ namespace AngularStandaloneDemo.Migrations
                 column: "WaitingListId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleClaims_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Availabilities_UserId",
                 table: "Availabilities",
                 column: "UserId");
@@ -571,9 +658,9 @@ namespace AngularStandaloneDemo.Migrations
                 column: "VisitId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Immunization_PatientDetailsId",
+                name: "IX_Immunization_MedicalRecordId",
                 table: "Immunization",
-                column: "PatientDetailsId");
+                column: "MedicalRecordId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Immunization_PatientId",
@@ -581,9 +668,9 @@ namespace AngularStandaloneDemo.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LabResult_PatientDetailsId",
+                name: "IX_LabResult_MedicalRecordId",
                 table: "LabResult",
-                column: "PatientDetailsId");
+                column: "MedicalRecordId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LabResult_PatientId",
@@ -591,43 +678,8 @@ namespace AngularStandaloneDemo.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalRecords_CreatedByID",
-                table: "MedicalRecords",
-                column: "CreatedByID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_MedicalRecords_PatientDetailsId",
                 table: "MedicalRecords",
-                column: "PatientDetailsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalRecords_PatientId",
-                table: "MedicalRecords",
-                column: "PatientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalRecords_UserID",
-                table: "MedicalRecords",
-                column: "UserID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalRecords_UserID1",
-                table: "MedicalRecords",
-                column: "UserID1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalRecords_UserID2",
-                table: "MedicalRecords",
-                column: "UserID2");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_MedicalRecords_UserID3",
-                table: "MedicalRecords",
-                column: "UserID3");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Medication_PatientDetailsId",
-                table: "Medication",
                 column: "PatientDetailsId");
 
             migrationBuilder.CreateIndex(
@@ -636,24 +688,10 @@ namespace AngularStandaloneDemo.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PatientTasks_AssignedToNurseId",
-                table: "PatientTasks",
-                column: "AssignedToNurseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PatientTasks_CreatedByNurseId",
-                table: "PatientTasks",
-                column: "CreatedByNurseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PatientTasks_PatientDetailsId",
-                table: "PatientTasks",
-                column: "PatientDetailsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PatientTasks_PatientId",
-                table: "PatientTasks",
-                column: "PatientId");
+                name: "IX_PatientDetails_PatientId",
+                table: "PatientDetails",
+                column: "PatientId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Visit_MedicalRecordId",
@@ -661,14 +699,9 @@ namespace AngularStandaloneDemo.Migrations
                 column: "MedicalRecordId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Visit_PatientDetailsId",
-                table: "Visit",
+                name: "IX_WaitingList_PatientDetailsId",
+                table: "WaitingList",
                 column: "PatientDetailsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Visit_PatientId",
-                table: "Visit",
-                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WaitingList_PatientId",
@@ -696,6 +729,10 @@ namespace AngularStandaloneDemo.Migrations
                 table: "Appointments");
 
             migrationBuilder.DropForeignKey(
+                name: "FK_WaitingList_PatientDetails_PatientDetailsId",
+                table: "WaitingList");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Appointments_Patients_PatientId",
                 table: "Appointments");
 
@@ -719,6 +756,21 @@ namespace AngularStandaloneDemo.Migrations
                 name: "Allergy");
 
             migrationBuilder.DropTable(
+                name: "AspNetRoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserLogins");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
                 name: "Availabilities");
 
             migrationBuilder.DropTable(
@@ -737,7 +789,10 @@ namespace AngularStandaloneDemo.Migrations
                 name: "PatientInfoDto");
 
             migrationBuilder.DropTable(
-                name: "PatientTasks");
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Visit");

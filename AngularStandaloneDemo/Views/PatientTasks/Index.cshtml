@@ -1,8 +1,4 @@
-﻿@model IEnumerable<AngularStandaloneDemo.Models.PatientTask>
-
-@{
-    Layout = null;
-}
+﻿
 
 <!DOCTYPE html>
 
@@ -19,43 +15,43 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Priority)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DueDate)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastModifiedDate)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CompletedDate)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsRecurring)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RecurringPattern)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Patient)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                    @Html.DisplayNameFor(model => model.AssignedToNurse)
+                    @Html.DisplayNameFor(model => model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedByNurse)
+                @Html.DisplayNameFor(model => model)
             </th>
             <th></th>
         </tr>
@@ -64,43 +60,43 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Priority)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Status)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DueDate)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LastModifiedDate)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CompletedDate)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IsRecurring)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RecurringPattern)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Patient.FirstName)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AssignedToNurse.Email)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.CreatedByNurse.Email)
+                @Html.DisplayFor(modelItem => item)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

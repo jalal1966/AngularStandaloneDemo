@@ -41,28 +41,7 @@ public partial class Patient
 
     public DateTime? LastVisitDate { get; set; }
 
-    public int Gender { get; set; }
-
-    public virtual ICollection<Allergy> Allergies { get; set; } = new List<Allergy>();
-
-    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-
-    public virtual ICollection<Immunization> Immunizations { get; set; } = new List<Immunization>();
-
-    public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>();
-
-    public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
-
-    public virtual ICollection<Medication> Medications { get; set; } = new List<Medication>();
-
-    public virtual ICollection<PatientTask> PatientTasks { get; set; } = new List<PatientTask>();
-
-    public virtual ICollection<Visit> Visits { get; set; } = new List<Visit>();
-
-    public virtual ICollection<WaitingList> WaitingLists { get; set; } = new List<WaitingList>();
-
-    internal void UpdateLastVisit(DateTime visitDate)
-    {
-        throw new NotImplementedException();
-    }
+  
+   
+    public virtual PatientDetails PatientDetails { get; set; }
 }

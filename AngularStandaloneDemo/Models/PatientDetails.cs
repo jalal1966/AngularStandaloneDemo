@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AngularStandaloneDemo.Models
 {
-    public class PatientDetails
+    public class PatientDetail
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
@@ -36,7 +36,7 @@ namespace AngularStandaloneDemo.Models
         public DateTime? LastVisitDate { get; set; }
         public required string ProfileImageUrl { get; set; }
  
-        public virtual required ICollection<PatientTask> Tasks { get; set; }
+        //public virtual required ICollection<PatientTask> Tasks { get; set; }
         // Navigation properties
         public virtual Gender Gender { get; set; }
         public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }

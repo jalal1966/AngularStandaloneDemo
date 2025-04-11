@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AngularStandaloneDemo.Models;
 
-public partial class PatientInfoDto
+public partial class PatientInfo
 {
     public int Id { get; set; }
 
@@ -14,8 +14,6 @@ public partial class PatientInfoDto
     public DateTime DateOfBirth { get; set; }
 
     public int GenderId { get; set; }
-
-    public int Gender { get; set; }
 
     public string? ContactNumber { get; set; }
 

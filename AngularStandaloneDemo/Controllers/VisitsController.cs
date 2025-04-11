@@ -22,20 +22,17 @@ namespace AngularStandaloneDemo.Controllers
 
         // GET: api/Visits
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Visit>>> GetVisits()
-        {
-            return await _context.Visits
-                .Include(v => v.Patient)
+        public async Task<ActionResult<IEnumerable<Visit>>> GetVisits() => await _context.Visits
+                .Include(v => v.PatientId)
                 .Include(v => v.Diagnoses)
                 .ToListAsync();
-        }
 
         // GET: api/Visits/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Visit>> GetVisit(int id)
         {
             var visit = await _context.Visits
-                .Include(v => v.Patient)
+                .Include(v => v.PatientId)
                 .Include(v => v.Diagnoses)
                 .FirstOrDefaultAsync(v => v.Id == id);
 
