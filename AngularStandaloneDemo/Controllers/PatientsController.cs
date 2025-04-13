@@ -38,7 +38,7 @@ namespace AngularStandaloneDemo.Controllers
          .Include(p => p.PatientDetails)
              .ThenInclude(pd => pd.MedicalRecords)
                  .ThenInclude(mr => mr.Visits)
-                     .ThenInclude(v => v.Medications)
+                     .ThenInclude(v => v.Medication)
          .Include(p => p.PatientDetails)
              .ThenInclude(pd => pd.MedicalRecords)
                  .ThenInclude(mr => mr.Allergies)

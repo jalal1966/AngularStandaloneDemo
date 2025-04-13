@@ -12,7 +12,7 @@ namespace AngularStandaloneDemo.Controllers
 {
    
         [ApiController]
-        [Route("api/patients/{patientId}/medications")]
+        [Route("api/patients/{VisitId}/medications")]
         public class MedicationsController : ControllerBase
         {
             private readonly Data.ApplicationDbContext _context;
@@ -24,10 +24,10 @@ namespace AngularStandaloneDemo.Controllers
 
             // GET: api/patients/5/medications
             [HttpGet]
-            public async Task<ActionResult<IEnumerable<Medication>>> GetMedications(int patientId)
+            public async Task<ActionResult<IEnumerable<Medication>>> GetMedications(int VisitId)
             {
                 var medications = await _context.Medications
-                    .Where(m => m.PatientId == patientId)
+                    .Where(m => m.VisitId == VisitId)
                     .ToListAsync();
 
                 return Ok(medications);
@@ -35,10 +35,10 @@ namespace AngularStandaloneDemo.Controllers
 
             // GET: api/patients/5/medications/active
             [HttpGet("active")]
-            public async Task<ActionResult<IEnumerable<Medication>>> GetActiveMedications(int patientId)
+            public async Task<ActionResult<IEnumerable<Medication>>> GetActiveMedications(int VisitId)
             {
                 var medications = await _context.Medications
-                    .Where(m => m.PatientId == patientId && m.IsActive)
+                    .Where(m => m.VisitId == VisitId && m.IsActive)
                     .ToListAsync();
 
                 return Ok(medications);
@@ -46,10 +46,10 @@ namespace AngularStandaloneDemo.Controllers
 
             // GET: api/patients/5/medications/3
             [HttpGet("{id}")]
-            public async Task<ActionResult<Medication>> GetMedication(int patientId, int id)
+            public async Task<ActionResult<Medication>> GetMedication(int VisitId, int id)
             {
                 var medication = await _context.Medications
-                    .FirstOrDefaultAsync(m => m.PatientId == patientId && m.Id == id);
+                    .FirstOrDefaultAsync(m => m.VisitId == VisitId && m.Id == id);
 
                 if (medication == null)
                 {
@@ -61,9 +61,9 @@ namespace AngularStandaloneDemo.Controllers
 
             // POST: api/patients/5/medications
             [HttpPost]
-            public async Task<ActionResult<Medication>> CreateMedication(int patientId, Medication medication)
+            public async Task<ActionResult<Medication>> CreateMedication(int VisitId, Medication medication)
             {
-                medication.PatientId = patientId;
+                medication.VisitId = VisitId;
 
                 // Set IsActive based on EndDate
                 medication.IsActive = medication.EndDate == null || medication.EndDate > DateTime.Now;
@@ -71,20 +71,20 @@ namespace AngularStandaloneDemo.Controllers
                 _context.Medications.Add(medication);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetMedication), new { patientId, id = medication.Id }, medication);
+                return CreatedAtAction(nameof(GetMedication), new { VisitId, id = medication.Id }, medication);
             }
 
             // PUT: api/patients/5/medications/3
             [HttpPut("{id}")]
-            public async Task<IActionResult> UpdateMedication(int patientId, int id, Medication medication)
+            public async Task<IActionResult> UpdateMedication(int VisitId, int id, Medication medication)
             {
-                if (id != medication.Id || patientId != medication.PatientId)
+                if (id != medication.Id || VisitId != medication.VisitId)
                 {
                     return BadRequest();
                 }
 
                 var existingMedication = await _context.Medications
-                    .FirstOrDefaultAsync(m => m.Id == id && m.PatientId == patientId);
+                    .FirstOrDefaultAsync(m => m.Id == id && m.VisitId == VisitId);
 
                 if (existingMedication == null)
                 {
@@ -110,10 +110,10 @@ namespace AngularStandaloneDemo.Controllers
 
             // DELETE: api/patients/5/medications/3
             [HttpDelete("{id}")]
-            public async Task<IActionResult> DeleteMedication(int patientId, int id)
+            public async Task<IActionResult> DeleteMedication(int VisitId, int id)
             {
                 var medication = await _context.Medications
-                    .FirstOrDefaultAsync(m => m.Id == id && m.PatientId == patientId);
+                    .FirstOrDefaultAsync(m => m.Id == id && m.VisitId == VisitId);
 
                 if (medication == null)
                 {

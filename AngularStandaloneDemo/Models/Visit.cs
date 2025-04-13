@@ -9,14 +9,13 @@ public partial class Visit
 
     public int PatientId { get; set; }
 
-    public DateTime VisitDate { get; set; }
+    public DateTime VisitDate { get; set; } = DateTime.Now;
 
     public string? ProviderName { get; set; }
 
     public int? ProviderId { get; set; }
 
-    public string? VisitType { get; set; }
-
+    public int VisitType { get; set; } 
     public string? Reason { get; set; }
 
     public string? Assessment { get; set; }
@@ -41,8 +40,10 @@ public partial class Visit
 
     public int? MedicalRecordId { get; set; }
 
-    public virtual ICollection<Diagnosis> Diagnoses { get; set; } = new List<Diagnosis>();
+    public virtual ICollection<Diagnosis> Diagnosis { get; set; } = new List<Diagnosis>();
 
 
-    public virtual ICollection<Medication> Medications { get; set; } = new List<Medication>();
+    public virtual ICollection<Medication> Medication { get; set; } = new List<Medication>();
 }
+
+

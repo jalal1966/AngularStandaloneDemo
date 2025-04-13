@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace AngularStandaloneDemo.Models;
 
@@ -17,5 +18,6 @@ public partial class Diagnosis
 
     public bool IsActive { get; set; }
 
-    public virtual Visit Visit { get; set; } = null!;
+    [JsonIgnore] // Add this attribute
+    public virtual Visit? Visit { get; set; } 
 }

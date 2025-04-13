@@ -232,7 +232,7 @@ namespace AngularStandaloneDemo.Controllers
                     Provider = provider,
                     StartTime = appointmentDto.StartTime,
                     EndTime = appointmentDto.EndTime,
-                    Type = (int)Enum.Parse<AppointmentType>(appointmentDto.Type),
+                    Type = (int)Enum.Parse<AppointmentTypes>(appointmentDto.Type),
                     Status = (int)Enum.Parse<AppointmentStatus>(appointmentDto.Status),
                     Notes = appointmentDto.Notes,
                 };
@@ -291,7 +291,7 @@ namespace AngularStandaloneDemo.Controllers
             appointment.StartTime = appointmentDto.StartTime;
             appointment.EndTime = appointmentDto.EndTime;
             appointment.Notes = appointmentDto.Notes;
-            appointment.Type = (int)Enum.Parse<AppointmentType>(appointmentDto.Type);
+            appointment.Type = (int)Enum.Parse<AppointmentTypes>(appointmentDto.Type);
             appointment.Status = (int)Enum.Parse<AppointmentStatus>(appointmentDto.Status);
 
             try

@@ -1,6 +1,6 @@
 ﻿namespace AngularStandaloneDemo.Enums
 {
-    public enum AppointmentType
+    public enum AppointmentTypes
     {
         CheckUp = 0,
         FollowUp = 1,

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace AngularStandaloneDemo.Models;
 
@@ -7,7 +8,7 @@ public partial class Medication
 {
     public int Id { get; set; }
 
-    public int PatientId { get; set; }
+    public int VisitId { get; set; }
 
     public string? Name { get; set; }
 
@@ -25,5 +26,8 @@ public partial class Medication
 
     public bool IsActive { get; set; }
 
-    public virtual Patient Patient { get; set; } = null!;
+    [JsonIgnore] // Add this attribute
+    public virtual Visit? Visit { get; set; }
+
+    // public virtual Patient Patient { get; set; } = null!;
 }

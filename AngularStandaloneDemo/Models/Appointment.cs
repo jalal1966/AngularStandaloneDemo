@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AngularStandaloneDemo.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace AngularStandaloneDemo.Models;
@@ -17,7 +18,10 @@ public partial class Appointment
 
     public int Status { get; set; }
 
+    //public AppointmentStatus AppointmentStatus { get; set; }
+
     public int Type { get; set; }
+   // public AppointmentTypes AppointmentTypes { get; set; }
 
     public string Notes { get; set; } = null!;
 
@@ -25,5 +29,6 @@ public partial class Appointment
 
     public virtual User Provider { get; set; } = null!;
 
+    // To Do Check 
     public virtual WaitingList? WaitingList { get; set; }
 }
