@@ -330,13 +330,13 @@ namespace AngularStandaloneDemo.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientId = table.Column<int>(type: "int", nullable: false),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: false),
                     VaccineName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AdministrationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LotNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AdministeringProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NextDoseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MedicalRecordId = table.Column<int>(type: "int", nullable: true)
+                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -345,11 +345,6 @@ namespace AngularStandaloneDemo.Migrations
                         name: "FK_Immunizations_MedicalRecords_MedicalRecordId",
                         column: x => x.MedicalRecordId,
                         principalTable: "MedicalRecords",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Immunizations_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -626,11 +621,6 @@ namespace AngularStandaloneDemo.Migrations
                 name: "IX_Immunizations_MedicalRecordId",
                 table: "Immunizations",
                 column: "MedicalRecordId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Immunizations_PatientId",
-                table: "Immunizations",
-                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LabResults_MedicalRecordId",

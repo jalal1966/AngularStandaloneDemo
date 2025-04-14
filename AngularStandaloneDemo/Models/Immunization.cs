@@ -8,6 +8,7 @@ public partial class Immunization
     public int Id { get; set; }
 
     public int PatientId { get; set; }
+    public int MedicalRecordId { get; set; }
 
     public string VaccineName { get; set; } = null!;
 
@@ -21,5 +22,5 @@ public partial class Immunization
 
     public string? Manufacturer { get; set; }
 
-    public virtual Patient Patient { get; set; } = null!;
+    // public virtual Patient Patient { get; set; } = null!;
 }

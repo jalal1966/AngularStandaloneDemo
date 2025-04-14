@@ -76,25 +76,19 @@ namespace AngularStandaloneDemo.Data
                 .HasMany(v => v.Medication)
                 .WithOne(m => m.Visit)
                 .HasForeignKey(m => m.VisitId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // ✅ Visit → Diagnoses (One-to-Many)
             modelBuilder.Entity<Visit>()
                 .HasMany(v => v.Diagnosis)
                 .WithOne(d => d.Visit)
                 .HasForeignKey(d => d.VisitId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder); 
         
         }
-        //public DbSet<AngularStandaloneDemo.Models.Allergy> Allergy { get; set; } = default!;
-        // public DbSet<AngularStandaloneDemo.Models.Medication> Medication { get; set; } = default!;
-        //public DbSet<AngularStandaloneDemo.Dtos.PatientInfoDto> PatientInfoDto { get; set; } = default!;
-        //public DbSet<AngularStandaloneDemo.Models.LabResult> LabResult { get; set; } = default!;
-        //public DbSet<AngularStandaloneDemo.Models.Immunization> Immunization { get; set; } = default!;
-        //public DbSet<AngularStandaloneDemo.Models.Visit> Visit { get; set; } = default!;
-        
+
     };
    
 }

@@ -261,7 +261,7 @@ namespace AngularStandaloneDemo.Migrations
                     b.Property<string>("Manufacturer")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("MedicalRecordId")
+                    b.Property<int>("MedicalRecordId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("NextDoseDate")
@@ -277,8 +277,6 @@ namespace AngularStandaloneDemo.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("MedicalRecordId");
-
-                    b.HasIndex("PatientId");
 
                     b.ToTable("Immunizations");
                 });
@@ -901,7 +899,7 @@ namespace AngularStandaloneDemo.Migrations
             modelBuilder.Entity("AngularStandaloneDemo.Models.Diagnosis", b =>
                 {
                     b.HasOne("AngularStandaloneDemo.Models.Visit", "Visit")
-                        .WithMany("Diagnoses")
+                        .WithMany("Diagnosis")
                         .HasForeignKey("VisitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -913,15 +911,9 @@ namespace AngularStandaloneDemo.Migrations
                 {
                     b.HasOne("AngularStandaloneDemo.Models.MedicalRecord", null)
                         .WithMany("Immunizations")
-                        .HasForeignKey("MedicalRecordId");
-
-                    b.HasOne("AngularStandaloneDemo.Models.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("MedicalRecordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("AngularStandaloneDemo.Models.LabResult", b =>
@@ -949,7 +941,7 @@ namespace AngularStandaloneDemo.Migrations
             modelBuilder.Entity("AngularStandaloneDemo.Models.Medication", b =>
                 {
                     b.HasOne("AngularStandaloneDemo.Models.Visit", "Visit")
-                        .WithMany("Medications")
+                        .WithMany("Medication")
                         .HasForeignKey("VisitId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -1092,9 +1084,9 @@ namespace AngularStandaloneDemo.Migrations
 
             modelBuilder.Entity("AngularStandaloneDemo.Models.Visit", b =>
                 {
-                    b.Navigation("Diagnoses");
+                    b.Navigation("Diagnosis");
 
-                    b.Navigation("Medications");
+                    b.Navigation("Medication");
                 });
 #pragma warning restore 612, 618
         }
