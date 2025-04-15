@@ -8,6 +8,7 @@ public partial class LabResult
     public int Id { get; set; }
 
     public int PatientId { get; set; }
+    public int medicalRecordId { get; set; }
 
     public DateTime TestDate { get; set; }
 
@@ -21,5 +22,5 @@ public partial class LabResult
 
     public string? Notes { get; set; }
 
-    public virtual Patient Patient { get; set; } = null!;
+    //public virtual Patient Patient { get; set; } = null!;
 }

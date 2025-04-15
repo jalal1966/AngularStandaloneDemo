@@ -26,7 +26,14 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<MedicalRecord>> GetMedicalRecord(int patientId)
         {
             var medicalRecord = await _context.MedicalRecords
-                .FirstOrDefaultAsync(m => m.PatientId == patientId);
+             .Include(m => m.Visits)                          // Include visits
+                .ThenInclude(v => v.Medication)             // Include medications for each visit
+             .Include(m => m.Visits)
+                .ThenInclude(v => v.Diagnosis)               // Include diagnosis for each visit
+            .Include(m => m.Allergies)                       // Include allergies
+            .Include(m => m.LabResults)                      // Include lab results
+            .Include(m => m.Immunizations)                   // Include immunizations
+            .FirstOrDefaultAsync(m => m.PatientId == patientId);
 
             if (medicalRecord == null)
             {

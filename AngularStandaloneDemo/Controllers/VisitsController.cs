@@ -33,8 +33,9 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<Visit>> GetVisit(int id)
         {
             var visit = await _context.Visits
-                .Include(v => v.PatientId)
+                //.Include(v => v.PatientId)
                 .Include(v => v.Diagnosis)
+                .Include(v => v.Medication)
                 .FirstOrDefaultAsync(v => v.Id == id);
 
             if (visit == null)
