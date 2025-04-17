@@ -4,6 +4,7 @@ using AngularStandaloneDemo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AngularStandaloneDemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250417123144_UpdatePressureDecimalPrecision")]
+    partial class UpdatePressureDecimalPrecision
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1042,16 +1045,10 @@ namespace AngularStandaloneDemo.Migrations
 
             modelBuilder.Entity("AngularStandaloneDemo.Models.Pressure", b =>
                 {
-                    b.HasOne("AngularStandaloneDemo.Models.Patient", null)
+                    b.HasOne("AngularStandaloneDemo.Models.Visit", "Visit")
                         .WithMany()
                         .HasForeignKey("VisitId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AngularStandaloneDemo.Models.Visit", "Visit")
-                        .WithMany("Pressure")
-                        .HasForeignKey("VisitId")
-                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Visit");
@@ -1184,8 +1181,6 @@ namespace AngularStandaloneDemo.Migrations
                     b.Navigation("Diagnosis");
 
                     b.Navigation("Medication");
-
-                    b.Navigation("Pressure");
                 });
 #pragma warning restore 612, 618
         }

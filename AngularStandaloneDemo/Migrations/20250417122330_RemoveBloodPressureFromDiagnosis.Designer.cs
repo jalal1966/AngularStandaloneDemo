@@ -4,6 +4,7 @@ using AngularStandaloneDemo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AngularStandaloneDemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250417122330_RemoveBloodPressureFromDiagnosis")]
+    partial class RemoveBloodPressureFromDiagnosis
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -582,42 +585,6 @@ namespace AngularStandaloneDemo.Migrations
                     b.ToTable("PatientDetails", (string)null);
                 });
 
-            modelBuilder.Entity("AngularStandaloneDemo.Models.Pressure", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal?>("BloodPressureRatio")
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("DiastolicPressure")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsBloodPressureNormal")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("SystolicPressure")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("VisitId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VisitId");
-
-                    b.ToTable("Pressure");
-                });
-
             modelBuilder.Entity("AngularStandaloneDemo.Models.User", b =>
                 {
                     b.Property<int>("UserID")
@@ -1040,23 +1007,6 @@ namespace AngularStandaloneDemo.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("AngularStandaloneDemo.Models.Pressure", b =>
-                {
-                    b.HasOne("AngularStandaloneDemo.Models.Patient", null)
-                        .WithMany()
-                        .HasForeignKey("VisitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AngularStandaloneDemo.Models.Visit", "Visit")
-                        .WithMany("Pressure")
-                        .HasForeignKey("VisitId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Visit");
-                });
-
             modelBuilder.Entity("AngularStandaloneDemo.Models.Visit", b =>
                 {
                     b.HasOne("AngularStandaloneDemo.Models.MedicalRecord", null)
@@ -1184,8 +1134,6 @@ namespace AngularStandaloneDemo.Migrations
                     b.Navigation("Diagnosis");
 
                     b.Navigation("Medication");
-
-                    b.Navigation("Pressure");
                 });
 #pragma warning restore 612, 618
         }

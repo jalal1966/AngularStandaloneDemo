@@ -4,6 +4,7 @@ using AngularStandaloneDemo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AngularStandaloneDemo.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250417123842_AddPatientIdToPressure")]
+    partial class AddPatientIdToPressure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -602,6 +605,9 @@ namespace AngularStandaloneDemo.Migrations
                     b.Property<bool>("IsBloodPressureNormal")
                         .HasColumnType("bit");
 
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SystolicPressure")
                         .HasColumnType("int");
 
@@ -612,6 +618,8 @@ namespace AngularStandaloneDemo.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
 
                     b.HasIndex("VisitId");
 
@@ -1044,14 +1052,14 @@ namespace AngularStandaloneDemo.Migrations
                 {
                     b.HasOne("AngularStandaloneDemo.Models.Patient", null)
                         .WithMany()
-                        .HasForeignKey("VisitId")
+                        .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AngularStandaloneDemo.Models.Visit", "Visit")
-                        .WithMany("Pressure")
+                        .WithMany()
                         .HasForeignKey("VisitId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Visit");
@@ -1184,8 +1192,6 @@ namespace AngularStandaloneDemo.Migrations
                     b.Navigation("Diagnosis");
 
                     b.Navigation("Medication");
-
-                    b.Navigation("Pressure");
                 });
 #pragma warning restore 612, 618
         }

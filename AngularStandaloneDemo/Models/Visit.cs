@@ -42,8 +42,8 @@ public partial class Visit
 
     public virtual ICollection<Diagnosis> Diagnosis { get; set; } = new List<Diagnosis>();
 
-
     public virtual ICollection<Medication> Medication { get; set; } = new List<Medication>();
+    public virtual ICollection<Pressure> Pressure { get; set; } = new List<Pressure>();
 }
 
 

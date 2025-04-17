@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using AngularStandaloneDemo.Dtos;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Humanizer;
 
 namespace AngularStandaloneDemo.Data
 {
@@ -27,6 +28,7 @@ namespace AngularStandaloneDemo.Data
         public DbSet<Immunization> Immunizations { get; set; }
         public DbSet<Visit> Visits { get; set; }
         public DbSet<Diagnosis> Diagnosis { get; set; }
+        public DbSet<Pressure> Pressure { get; set; }
 
         //public int PatientId { get; private set; }
 
@@ -34,6 +36,18 @@ namespace AngularStandaloneDemo.Data
         {
             
             base.OnModelCreating(modelBuilder);
+
+            //  ✅ Configure precision and scale for BloodPressureRatio
+            modelBuilder.Entity<Pressure>()
+                .Property(p => p.BloodPressureRatio)
+                .HasColumnType("decimal(5,2)");  // Adjust precision (5) and scale (2) as needed
+
+            // Add foreign key relationship to Patient if you have a Patient entity
+            modelBuilder.Entity<Pressure>()
+                .HasOne<Patient>()  // Replace Patient with your actual Patient entity type
+                .WithMany()
+                .HasForeignKey(p => p.VisitId);
+
 
             // ✅ Table Naming Conventions
             modelBuilder.Entity<User>().ToTable("Users");
@@ -84,6 +98,14 @@ namespace AngularStandaloneDemo.Data
                 .WithOne(d => d.Visit)
                 .HasForeignKey(d => d.VisitId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // ✅ Visit → Diagnoses (One-to-Many)
+            modelBuilder.Entity<Visit>()
+                   .HasMany(v => v.Pressure)
+                   .WithOne(d => d.Visit)
+                  .HasForeignKey(d => d.VisitId)
+                  .OnDelete(DeleteBehavior.Restrict);
+
             // ✅ Medication → Diagnosis (Many-to-One)
             modelBuilder.Entity<Medication>()
                 .HasOne(m => m.Diagnosis)

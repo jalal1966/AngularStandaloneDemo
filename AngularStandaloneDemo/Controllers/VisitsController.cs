@@ -25,6 +25,7 @@ namespace AngularStandaloneDemo.Controllers
         public async Task<ActionResult<IEnumerable<Visit>>> GetVisits() => await _context.Visits
             .Include(v => v.Diagnosis)
             .Include(v => v.Medication) // Added this to include medications
+            .Include(v => v.Pressure)  // Make sure this is included
             .ToListAsync();
                
 
@@ -36,6 +37,7 @@ namespace AngularStandaloneDemo.Controllers
                 //.Include(v => v.PatientId)
                 .Include(v => v.Diagnosis)
                 .Include(v => v.Medication)
+                .Include(v => v.Pressure)  // Make sure this is included
                 .FirstOrDefaultAsync(v => v.Id == id);
 
             if (visit == null)
@@ -54,6 +56,7 @@ namespace AngularStandaloneDemo.Controllers
                 .Where(v => v.PatientId == patientId)
                 .Include(v => v.Diagnosis)
                 .Include(m => m.Medication)
+                .Include(v => v.Pressure)  // Make sure this is included        
                 .ToListAsync();
         }
 
@@ -92,6 +95,7 @@ namespace AngularStandaloneDemo.Controllers
                 FollowUpProviderId = visit.FollowUpProviderId,
                 FollowUpType = visit.FollowUpType,
                 MedicalRecordId = visit.MedicalRecordId
+
             };
 
             // Add diagnoses
@@ -121,7 +125,19 @@ namespace AngularStandaloneDemo.Controllers
                     IsActive = medication.IsActive
                 });
             }
-
+            foreach (var pressure in visit.Pressure)
+            {
+                newVisit.Pressure.Add(new Pressure
+                {
+                     
+        
+                SystolicPressure = pressure.SystolicPressure,
+                    DiastolicPressure = pressure.DiastolicPressure,
+                    BloodPressureRatio = pressure.BloodPressureRatio,
+                    IsBloodPressureNormal = pressure.IsBloodPressureNormal
+                });
+      
+            }
             _context.Visits.Add(newVisit);
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetVisit), new { id = newVisit.Id }, newVisit);

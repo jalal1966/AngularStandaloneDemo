@@ -29,7 +29,9 @@ namespace AngularStandaloneDemo.Controllers
              .Include(m => m.Visits)                          // Include visits
                 .ThenInclude(v => v.Medication)             // Include medications for each visit
              .Include(m => m.Visits)
-                .ThenInclude(v => v.Diagnosis)               // Include diagnosis for each visit
+                .ThenInclude(v => v.Diagnosis)
+                .Include(m => m.Visits)
+                .ThenInclude(v => v.Pressure) // Include diagnosis for each visit
             .Include(m => m.Allergies)                       // Include allergies
             .Include(m => m.LabResults)                      // Include lab results
             .Include(m => m.Immunizations)                   // Include immunizations
