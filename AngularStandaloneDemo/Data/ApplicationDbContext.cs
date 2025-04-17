@@ -84,6 +84,13 @@ namespace AngularStandaloneDemo.Data
                 .WithOne(d => d.Visit)
                 .HasForeignKey(d => d.VisitId)
                 .OnDelete(DeleteBehavior.Restrict);
+            // ✅ Medication → Diagnosis (Many-to-One)
+            modelBuilder.Entity<Medication>()
+                .HasOne(m => m.Diagnosis)
+                .WithMany()
+                .HasForeignKey(m => m.DiagnosisId)
+                .OnDelete(DeleteBehavior.Restrict);
+
 
             base.OnModelCreating(modelBuilder); 
         

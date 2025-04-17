@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace AngularStandaloneDemo.Models;
@@ -25,9 +27,27 @@ public partial class Medication
     public string? Purpose { get; set; }
 
     public bool IsActive { get; set; }
+    // Prescription related properties
+    public int? DiagnosisId { get; set; }
+    public bool Refillable { get; set; }
+    [Range(0, 12)]
+    public int RefillCount { get; set; }
+    [MaxLength(500)]
+    public string? Instructions { get; set; }
+    [MaxLength(2000)]
+    public string? PrescriptionNotes { get; set; }
 
-    [JsonIgnore] // Add this attribute
+    // Navigation properties
+    [JsonIgnore]
     public virtual Visit? Visit { get; set; }
 
-    // public virtual Patient Patient { get; set; } = null!;
+    [ForeignKey("DiagnosisId")]
+    [JsonIgnore]
+    public virtual Diagnosis? Diagnosis { get; set; }
+
+    // Audit fields
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+
+  
 }

@@ -23,7 +23,7 @@ internal class Program
             logging.AddDebug();    // Debug output logger
         });
 
-
+ 
 
         // Register the ValidationActionFilter
         builder.Services.AddScoped<ValidationActionFilter>();
