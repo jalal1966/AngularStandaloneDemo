@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using AngularStandaloneDemo.Models;
 using AngularStandaloneDemo.Data;
 using AngularStandaloneDemo.Dtos;
+using DoctorAppointmentSystem.DTOs;
 
 namespace AngularStandaloneDemo.Controllers
 {
@@ -15,6 +16,7 @@ namespace AngularStandaloneDemo.Controllers
     public class PatientsController : ControllerBase
     {
         private readonly Data.ApplicationDbContext _context;
+
 
         public PatientsController(Data.ApplicationDbContext context)
         {
@@ -25,52 +27,54 @@ namespace AngularStandaloneDemo.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Patient>>> GetPatients()
         {
-            return await _context.Patients
-                .Include(p => p.PatientDetails)
-                .ToListAsync();
+            return await _context.Patients.ToListAsync();
         }
 
-        // GET: api/Patients/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Patient>> GetPatient(int id)
         {
             var patient = await _context.Patients
-         .Include(p => p.PatientDetails)
-             .ThenInclude(pd => pd.MedicalRecords)
-                 .ThenInclude(mr => mr.Visits)
-                     .ThenInclude(v => v.Medication)
-         .Include(p => p.PatientDetails)
-             .ThenInclude(pd => pd.MedicalRecords)
-                 .ThenInclude(mr => mr.Allergies)
-         .Include(p => p.PatientDetails)
-             .ThenInclude(pd => pd.MedicalRecords)
-                 .ThenInclude(mr => mr.LabResults)
-         .Include(p => p.PatientDetails)
-             .ThenInclude(pd => pd.Appointments)
-         .Include(p => p.PatientDetails)
-             .ThenInclude(pd => pd.MedicalRecords)
-                 .ThenInclude(mr => mr.Immunizations)
-         .FirstOrDefaultAsync(p => p.Id == id);
+                .Include(p => p.PatientDetails)
+                .Include(pd => pd!.WaitingLists)
+                .Include(pd => pd!.Appointments)
+                  .ThenInclude(a => a.Provider)
+                .Include(pd => pd!.MedicalRecords)
+                   .ThenInclude(mr => mr.Visits)
+                .Include(pd => pd!.MedicalRecords)
+                       .ThenInclude(mr => mr.Visits)
+                         .ThenInclude(v => v.Medication)
+                .Include(pd => pd!.MedicalRecords)
+                    .ThenInclude(mr => mr.Allergies)
+                .Include(pd => pd!.MedicalRecords)
+                        .ThenInclude(mr => mr.LabResults)
+                 .Include(pd => pd!.MedicalRecords)
+                        .ThenInclude(mr => mr.Pressure)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (patient == null)
             {
                 return NotFound();
             }
+          
 
             return patient;
         }
 
         // PUT: api/Patients/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPatient(int id, Patient patient)
+        public async Task<IActionResult> UpdatePatient(int id, Patient patient)
         {
             if (id != patient.Id)
             {
                 return BadRequest();
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Entry(patient).State = EntityState.Modified;
-            _context.Entry(patient.PatientDetails).State = EntityState.Modified;
 
             try
             {
@@ -91,47 +95,40 @@ namespace AngularStandaloneDemo.Controllers
             return NoContent();
         }
 
-        // POST: api/Patients
-        /* [HttpPost]
-         public async Task<ActionResult<PatientDto>> PostPatient(PatientDto patient)
-         {
-             _context.Patients.Add(patient);
-             await _context.SaveChangesAsync();
-
-             return CreatedAtAction("GetPatient", new { id = patient.Id }, patient);
-         }*/
         [HttpPost]
-        public async Task<ActionResult<PatientDto>> PostPatient(PatientDto patientDto)
+        public async Task<ActionResult<Patient>> CreatePatient(PatientDto dto)
         {
-            // Map DTO to model
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var patient = new Patient
             {
-                FirstName = patientDto.FirstName,
-                LastName = patientDto.LastName,
-                DateOfBirth = patientDto.DateOfBirth,
-                GenderID = patientDto.GenderID,
-                ContactNumber = patientDto.ContactNumber,
-                Email = patientDto.Email,
-                Address = patientDto.Address,
-                EmergencyContactName = patientDto.EmergencyContactName,
-                EmergencyContactNumber = patientDto.EmergencyContactNumber,
-                InsuranceProvider = patientDto.InsuranceProvider,
-                InsuranceNumber = patientDto.InsuranceNumber,
-                NursID = patientDto.NursID,
-                NursName = patientDto.NursName,
-                PatientDoctorName = patientDto.PatientDoctorName,
-                PatientDoctorID = patientDto.PatientDoctorID,
-                RegistrationDate = DateTime.Now, // Or patientDto.RegistrationDate if you want to use that value
-                LastVisitDate = patientDto.LastVisitDate
-            };
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                DateOfBirth = dto.DateOfBirth,
+                GenderID = dto.GenderID,
+                ContactNumber = dto.ContactNumber,
+                Email = dto.Email,
+                Address = dto.Address,
+                EmergencyContactName = dto.EmergencyContactName,
+                EmergencyContactNumber = dto.EmergencyContactNumber,
+                InsuranceProvider = dto.InsuranceProvider,
+                InsuranceNumber = dto.InsuranceNumber,
+                NursID = dto.NursID,
+                NursName = dto.NursName,
+                PatientDoctorID = dto.PatientDoctorID,
+                PatientDoctorName = dto.PatientDoctorName,
+                RegistrationDate = DateTime.Now, // Always set by the server
+                LastVisitDate = dto.LastVisitDate ?? DateTime.Now,
+                
+        };
 
             _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
 
-            // Update the DTO with the generated ID
-            patientDto.Id = patient.Id;
-
-            return CreatedAtAction("GetPatient", new { id = patient.Id }, patientDto);
+            return CreatedAtAction(nameof(GetPatient), new { id = patient.Id }, patient);
         }
 
         // DELETE: api/Patients/5
@@ -167,29 +164,115 @@ namespace AngularStandaloneDemo.Controllers
             }
 
             patient.LastVisitDate = visitDate;
-            patient.PatientDetails.LastVisitDate = visitDate;
+            //patient.LastVisitDate = visitDate;
 
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        // GET: api/Patients/Search?query=smith
-        [HttpGet("Search")]
-        public async Task<ActionResult<IEnumerable<Patient>>> SearchPatients([FromQuery] string query)
+        // PUT: api/patients/{id}/info
+        [HttpPut("{id}/info")]
+        public async Task<IActionResult> UpdatePatientInfo(int id, [FromBody] PatientBasicInfoUpdate patientInfo)
         {
-            if (string.IsNullOrEmpty(query))
+            if (!ModelState.IsValid)
             {
-                return await GetPatients();
+                return BadRequest(ModelState);
             }
 
-            return await _context.Patients
-                .Include(p => p.PatientDetails)
-                .Where(p => p.FirstName.Contains(query) ||
-                            p.LastName.Contains(query) ||
-                            p.ContactNumber.Contains(query) ||
-                            p.Email.Contains(query))
+            var result = await _context.UpdatePatientInfoAsync(id, patientInfo);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+
+        // PATCH: api/patients/{id}/info/contact
+        [HttpPatch("{id}/info/contact")]
+        public async Task<IActionResult> UpdateContactInfo(int id, [FromBody] ContactInfoUpdate contactInfo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _context.UpdateContactInfoAsync(id, contactInfo);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        // PATCH: api/patients/{id}/info/insurance
+        [HttpPatch("{id}/info/insurance")]
+        public async Task<IActionResult> UpdateInsuranceInfo(int id, [FromBody] InsuranceInfoUpdate insuranceInfo)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _context.UpdateInsuranceInfoAsync(id, insuranceInfo);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
+        // GET: api/Patients/search?term=smith
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Patient>>> SearchPatients(string term)
+        {
+            if (string.IsNullOrEmpty(term))
+            {
+                return BadRequest("Search term cannot be empty");
+            }
+
+            var patients = await _context.Patients
+                .Where(p => p.FirstName.Contains(term) ||
+                            p.LastName.Contains(term) ||
+                            p.InsuranceNumber.Contains(term))
                 .ToListAsync();
+
+            return patients;
+        }
+        // GET: api/Patients/appointments/5
+        [HttpGet("appointments/{id}")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetPatientAppointments(int id)
+        {
+            var appointments = await _context.Appointments
+                .Where(a => a.PatientId == id)
+                .ToListAsync();
+
+            if (appointments == null || !appointments.Any())
+            {
+                return NotFound("No appointments found for this patient");
+            }
+
+            return appointments;
+        }
+
+        // GET: api/Patients/medicalrecords/5
+        [HttpGet("medicalrecords/{id}")]
+        public async Task<ActionResult<IEnumerable<MedicalRecord>>> GetPatientMedicalRecords(int id)
+        {
+            var records = await _context.MedicalRecords
+                .Where(r => r.PatientId == id)
+                .ToListAsync();
+
+            if (records == null || !records.Any())
+            {
+                return NotFound("No medical records found for this patient");
+            }
+
+            return records;
         }
 
         private bool PatientExists(int id)

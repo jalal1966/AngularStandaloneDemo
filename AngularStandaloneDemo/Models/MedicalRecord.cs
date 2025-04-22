@@ -43,5 +43,6 @@ public partial class MedicalRecord
     public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>();
   
     public virtual ICollection<Immunization> Immunizations { get; set; } = new List<Immunization>();
+    public virtual ICollection<Pressure> Pressure { get; set; } = new List<Pressure>();
 
 }

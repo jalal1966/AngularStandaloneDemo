@@ -1,6 +1,7 @@
 ﻿using AngularStandaloneDemo.Enums;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace AngularStandaloneDemo.Models;
 
@@ -25,10 +26,12 @@ public partial class Appointment
 
     public string Notes { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual Patient Patient { get; set; } = null!;
-
+    [JsonIgnore]
     public virtual User Provider { get; set; } = null!;
 
     // To Do Check 
+    [JsonIgnore]
     public virtual WaitingList? WaitingList { get; set; }
 }

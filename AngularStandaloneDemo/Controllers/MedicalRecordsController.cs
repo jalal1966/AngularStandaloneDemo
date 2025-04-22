@@ -30,11 +30,10 @@ namespace AngularStandaloneDemo.Controllers
                 .ThenInclude(v => v.Medication)             // Include medications for each visit
              .Include(m => m.Visits)
                 .ThenInclude(v => v.Diagnosis)
-                .Include(m => m.Visits)
-                .ThenInclude(v => v.Pressure) // Include diagnosis for each visit
             .Include(m => m.Allergies)                       // Include allergies
             .Include(m => m.LabResults)                      // Include lab results
-            .Include(m => m.Immunizations)                   // Include immunizations
+            .Include(m => m.Immunizations)  // Include immunizations
+            .Include(m => m.Pressure)  // Include pressure
             .FirstOrDefaultAsync(m => m.PatientId == patientId);
 
             if (medicalRecord == null)

@@ -1,56 +1,47 @@
-﻿using AngularStandaloneDemo.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using AngularStandaloneDemo.Dtos;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-namespace AngularStandaloneDemo.Models
+namespace AngularStandaloneDemo.Models;
+
+public partial class PatientDetails
 {
-    public class PatientDetail
+  
+    public int Id { get; set; }
+
+    [ForeignKey("Patient")]
+    public int PatientId { get; set; }  // Foreign key
+
+    public string FirstName { get; set; } = null!;
+
+    public string LastName { get; set; } = null!;
+
+    public string RoomNumber { get; set; } = null!;
+
+    public string BedNumber { get; set; } = null!;
+
+    public string PrimaryDiagnosis { get; set; } = null!;
+
+    public DateTime AdmissionDate { get; set; }
+
+    public DateTime? LastVisitDate { get; set; }
+
+    public string ProfileImageUrl { get; set; } = null!;
+
+    [JsonIgnore]  // This prevents the circular reference
+    public virtual Patient Patient { get; set; }
+
+
+    /*public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+    public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
+
+    public virtual ICollection<WaitingList> WaitingLists { get; set; } = new List<WaitingList>();*/
+
+    internal void UpdateLastVisit(DateTime visitDate)
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Ensure Identity is set
-        public int Id { get; set; }
-
-        [ForeignKey("Patient")]
-        public int PatientId { get; set; }
-        
-        [Required]
-        [StringLength(50)]
-        public required string FirstName { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public required string LastName { get; set; }
-
-        [Required]
-        [StringLength(10)]
-        public required string RoomNumber { get; set; }
-
-        [StringLength(10)]
-        public required string BedNumber { get; set; }
-        
-        [StringLength(200)]
-        public required string PrimaryDiagnosis { get; set; }
-
-        [Required]
-        public DateTime AdmissionDate { get; set; }
-        public DateTime? LastVisitDate { get; set; }
-        public required string ProfileImageUrl { get; set; }
- 
-        //public virtual required ICollection<PatientTask> Tasks { get; set; }
-        // Navigation properties
-        public virtual Gender Gender { get; set; }
-        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; }
-        public virtual ICollection<Allergy> Allergies { get; set; }
-        public virtual ICollection<Medication> Medications { get; set; }
-        public virtual ICollection<Visit> Visits { get; set; }
-        public virtual ICollection<LabResult> LabResults { get; set; }
-        public virtual ICollection<Immunization> Immunizations { get; set; }
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-
-        public void UpdateLastVisit(DateTime visitDate)
-        {
-            LastVisitDate = visitDate;
-        }
-
+        throw new NotImplementedException();
     }
+
 }

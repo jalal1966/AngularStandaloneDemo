@@ -9,6 +9,7 @@ public partial class Allergy
 
     public int PatientId { get; set; }
 
+    public int MedicalRecordId { get; set; }
     public string? AllergyType { get; set; }
 
     public string? Name { get; set; }

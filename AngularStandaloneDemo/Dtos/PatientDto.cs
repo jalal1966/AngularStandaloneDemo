@@ -1,4 +1,5 @@
 ﻿using AngularStandaloneDemo.Enums;
+using AngularStandaloneDemo.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace AngularStandaloneDemo.Dtos
@@ -26,5 +27,6 @@ namespace AngularStandaloneDemo.Dtos
         public int? PatientDoctorID { get; set; }
         public DateTime RegistrationDate { get; internal set; }
         public DateTime? LastVisitDate { get; internal set; }
+        //public PatientDetailsDto? PatientDetails { get; set; }
     }
 }

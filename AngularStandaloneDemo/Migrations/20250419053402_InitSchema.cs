@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AngularStandaloneDemo.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -218,6 +218,37 @@ namespace AngularStandaloneDemo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MedicalRecords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    RecordDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsFollowUpRequired = table.Column<bool>(type: "bit", nullable: false),
+                    FollowUpDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Height = table.Column<double>(type: "float", nullable: true),
+                    Weight = table.Column<double>(type: "float", nullable: true),
+                    Bmi = table.Column<double>(type: "float", nullable: true),
+                    BloodType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ChronicConditions = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SurgicalHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FamilyMedicalHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SocialHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MedicalRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MedicalRecords_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PatientDetails",
                 columns: table => new
                 {
@@ -268,50 +299,18 @@ namespace AngularStandaloneDemo.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MedicalRecords",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientId = table.Column<int>(type: "int", nullable: false),
-                    RecordDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsFollowUpRequired = table.Column<bool>(type: "bit", nullable: false),
-                    FollowUpDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Height = table.Column<double>(type: "float", nullable: true),
-                    Weight = table.Column<double>(type: "float", nullable: true),
-                    Bmi = table.Column<double>(type: "float", nullable: true),
-                    BloodType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ChronicConditions = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SurgicalHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FamilyMedicalHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SocialHistory = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserID = table.Column<int>(type: "int", nullable: false),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MedicalRecords", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_MedicalRecords_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Allergies",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientId = table.Column<int>(type: "int", nullable: false),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: false),
                     AllergyType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Reaction = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Severity = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateIdentified = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    MedicalRecordId = table.Column<int>(type: "int", nullable: true)
+                    DateIdentified = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -345,8 +344,7 @@ namespace AngularStandaloneDemo.Migrations
                         name: "FK_Immunizations_MedicalRecords_MedicalRecordId",
                         column: x => x.MedicalRecordId,
                         principalTable: "MedicalRecords",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -356,13 +354,13 @@ namespace AngularStandaloneDemo.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PatientId = table.Column<int>(type: "int", nullable: false),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: false),
                     TestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TestName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Result = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReferenceRange = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrderingProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MedicalRecordId = table.Column<int>(type: "int", nullable: true)
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -372,12 +370,31 @@ namespace AngularStandaloneDemo.Migrations
                         column: x => x.MedicalRecordId,
                         principalTable: "MedicalRecords",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Pressure",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PatientId = table.Column<int>(type: "int", nullable: false),
+                    MedicalRecordId = table.Column<int>(type: "int", nullable: false),
+                    SystolicPressure = table.Column<int>(type: "int", nullable: true),
+                    DiastolicPressure = table.Column<int>(type: "int", nullable: true),
+                    BloodPressureRatio = table.Column<decimal>(type: "decimal(5,2)", nullable: true),
+                    IsBloodPressureNormal = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pressure", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LabResults_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Pressure_MedicalRecords_MedicalRecordId",
+                        column: x => x.MedicalRecordId,
+                        principalTable: "MedicalRecords",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -424,7 +441,13 @@ namespace AngularStandaloneDemo.Migrations
                     DiagnosisCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DiagnosisDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    TreatmentPlan = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    FollowUpNeeded = table.Column<bool>(type: "bit", nullable: false),
+                    FollowUpDate = table.Column<DateTime>(type: "date", nullable: true),
+                    TreatmentNotes = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -451,11 +474,24 @@ namespace AngularStandaloneDemo.Migrations
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PrescribingProvider = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Purpose = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    DiagnosisId = table.Column<int>(type: "int", nullable: true),
+                    Refillable = table.Column<bool>(type: "bit", nullable: false),
+                    RefillCount = table.Column<int>(type: "int", nullable: false),
+                    Instructions = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    PrescriptionNotes = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Medications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Medications_Diagnosis_DiagnosisId",
+                        column: x => x.DiagnosisId,
+                        principalTable: "Diagnosis",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Medications_Visits_VisitId",
                         column: x => x.VisitId,
@@ -477,17 +513,11 @@ namespace AngularStandaloneDemo.Migrations
                     Status = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WaitingListId = table.Column<int>(type: "int", nullable: true),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                    WaitingListId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Appointments", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Appointments_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Appointments_Patients_PatientId",
                         column: x => x.PatientId,
@@ -512,8 +542,7 @@ namespace AngularStandaloneDemo.Migrations
                     RequestedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PatientDetailsId = table.Column<int>(type: "int", nullable: true)
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -524,11 +553,6 @@ namespace AngularStandaloneDemo.Migrations
                         principalTable: "Appointments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_WaitingList_PatientDetails_PatientDetailsId",
-                        column: x => x.PatientDetailsId,
-                        principalTable: "PatientDetails",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_WaitingList_Patients_PatientId",
                         column: x => x.PatientId,
@@ -547,11 +571,6 @@ namespace AngularStandaloneDemo.Migrations
                 name: "IX_Allergies_MedicalRecordId",
                 table: "Allergies",
                 column: "MedicalRecordId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Appointments_PatientDetailsId",
-                table: "Appointments",
-                column: "PatientDetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_PatientId",
@@ -628,14 +647,14 @@ namespace AngularStandaloneDemo.Migrations
                 column: "MedicalRecordId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LabResults_PatientId",
-                table: "LabResults",
+                name: "IX_MedicalRecords_PatientId",
+                table: "MedicalRecords",
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MedicalRecords_PatientDetailsId",
-                table: "MedicalRecords",
-                column: "PatientDetailsId");
+                name: "IX_Medications_DiagnosisId",
+                table: "Medications",
+                column: "DiagnosisId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Medications_VisitId",
@@ -645,18 +664,17 @@ namespace AngularStandaloneDemo.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_PatientDetails_PatientId",
                 table: "PatientDetails",
-                column: "PatientId",
-                unique: true);
+                column: "PatientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pressure_MedicalRecordId",
+                table: "Pressure",
+                column: "MedicalRecordId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Visits_MedicalRecordId",
                 table: "Visits",
                 column: "MedicalRecordId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WaitingList_PatientDetailsId",
-                table: "WaitingList",
-                column: "PatientDetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WaitingList_PatientId",
@@ -679,14 +697,6 @@ namespace AngularStandaloneDemo.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Appointments_PatientDetails_PatientDetailsId",
-                table: "Appointments");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_WaitingList_PatientDetails_PatientDetailsId",
-                table: "WaitingList");
-
             migrationBuilder.DropForeignKey(
                 name: "FK_Appointments_Patients_PatientId",
                 table: "Appointments");
@@ -729,9 +739,6 @@ namespace AngularStandaloneDemo.Migrations
                 name: "Availabilities");
 
             migrationBuilder.DropTable(
-                name: "Diagnosis");
-
-            migrationBuilder.DropTable(
                 name: "Immunizations");
 
             migrationBuilder.DropTable(
@@ -741,19 +748,25 @@ namespace AngularStandaloneDemo.Migrations
                 name: "Medications");
 
             migrationBuilder.DropTable(
+                name: "PatientDetails");
+
+            migrationBuilder.DropTable(
+                name: "Pressure");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Diagnosis");
+
+            migrationBuilder.DropTable(
                 name: "Visits");
 
             migrationBuilder.DropTable(
                 name: "MedicalRecords");
-
-            migrationBuilder.DropTable(
-                name: "PatientDetails");
 
             migrationBuilder.DropTable(
                 name: "Patients");

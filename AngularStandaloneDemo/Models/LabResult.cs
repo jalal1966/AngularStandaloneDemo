@@ -8,7 +8,7 @@ public partial class LabResult
     public int Id { get; set; }
 
     public int PatientId { get; set; }
-    public int medicalRecordId { get; set; }
+    public int MedicalRecordId { get; set; }
 
     public DateTime TestDate { get; set; }
 

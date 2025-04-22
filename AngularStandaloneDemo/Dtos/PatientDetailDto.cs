@@ -1,12 +1,17 @@
 ﻿using AngularStandaloneDemo.Enums;
 using AngularStandaloneDemo.Models;
+using DoctorAppointmentSystem.DTOs;
 
 namespace AngularStandaloneDemo.Dtos
 {
     // Extended PatientDto with additional information
-    public class PatientDetailDto
+    public class PatientDetailsDto
     {
         public int Id { get; set; }
+        public int PatientId { get; set; }
+
+        public string? RoomNumber { get; set; }
+        public string? BedNumber { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
@@ -26,23 +31,19 @@ namespace AngularStandaloneDemo.Dtos
         public DateTime RegistrationDate { get; set; }
         public DateTime? LastVisitDate { get; set; }
 
-        // Medical record summary
-        public double? Height { get; set; }
-        public double? Weight { get; set; }
-        public double? BMI { get; set; }
-        public string? BloodType { get; set; }
 
-        // Lists of related records
-        public virtual required ICollection<MedicalRecord> MedicalRecords { get; set; }
-        public required List<AllergyDto> Allergies { get; set; }
-        public required List<VisitSummaryDto> RecentVisits { get; set; }
-        // Navigation properties
-        public virtual ICollection<Medication> Medications { get; set; }
-        public virtual ICollection<Visit> Visits { get; set; }
-        public virtual ICollection<LabResult> LabResults { get; set; }
-        public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-       // public virtual ICollection<PatientTask> Tasks { get; set; } = new List<PatientTask>();
-        public object Immunizations { get; internal set; }
+        // Lists of related records (initialized to empty lists)
+        public List<MedicalRecordDto> MedicalRecords { get; set; } = new List<MedicalRecordDto>();
+        public List<WaitingListDto> WaitingLists { get; set; } = new List<WaitingListDto>();
+        public List<AllergyDto> Allergies { get; set; } = new List<AllergyDto>();
+        public List<VisitSummaryDto> RecentVisits { get; set; } = new List<VisitSummaryDto>();
+
+        // Navigation properties as DTOs
+        public List<MedicationDto> Medications { get; set; } = new List<MedicationDto>();
+        public List<Visit> Visits { get; set; } = new List<Visit>();
+        public List<LabResultDto> LabResults { get; set; } = new List<LabResultDto>();
+        public List<AppointmentDto> Appointments { get; set; } = new List<AppointmentDto>();
+        public List<Immunization> Immunizations { get; set; } = new List<Immunization>();
 
         public void UpdateLastVisit(DateTime visitDate)
         {
