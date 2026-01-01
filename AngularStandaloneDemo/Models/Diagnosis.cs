@@ -12,7 +12,6 @@ public partial class Diagnosis
     public int VisitId { get; set; }
     public string? DiagnosisCode { get; set; }
     public string? Description { get; set; }
-    public DateTime DiagnosisDate { get; set; }
     public bool IsActive { get; set; }
     // Treatment related properties
     [MaxLength(2000)]

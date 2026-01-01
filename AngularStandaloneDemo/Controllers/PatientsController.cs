@@ -1,13 +1,14 @@
-﻿using System;
+﻿using AngularStandaloneDemo.Data;
+using AngularStandaloneDemo.Dtos;
+using AngularStandaloneDemo.Models;
+using AngularStandaloneDemo.Services;
+using DoctorAppointmentSystem.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AngularStandaloneDemo.Models;
-using AngularStandaloneDemo.Data;
-using AngularStandaloneDemo.Dtos;
-using DoctorAppointmentSystem.DTOs;
 
 namespace AngularStandaloneDemo.Controllers
 {
@@ -15,12 +16,19 @@ namespace AngularStandaloneDemo.Controllers
     [ApiController]
     public class PatientsController : ControllerBase
     {
+        private readonly ILabResultService _labResultService;
+        private readonly IEmailService _emailService;
+        private readonly ILogger<PatientsController> _logger;
         private readonly Data.ApplicationDbContext _context;
 
-
-        public PatientsController(Data.ApplicationDbContext context)
+        public PatientsController(Data.ApplicationDbContext context, ILabResultService labResultService,
+            IEmailService emailService,
+            ILogger<PatientsController> logger)
         {
             _context = context;
+            _labResultService = labResultService;
+            _emailService = emailService;
+            _logger = logger;
         }
 
         // GET: api/Patients
@@ -55,7 +63,7 @@ namespace AngularStandaloneDemo.Controllers
             {
                 return NotFound();
             }
-          
+
 
             return patient;
         }
@@ -122,8 +130,8 @@ namespace AngularStandaloneDemo.Controllers
                 PatientDoctorName = dto.PatientDoctorName,
                 RegistrationDate = DateTime.Now, // Always set by the server
                 LastVisitDate = dto.LastVisitDate ?? DateTime.Now,
-                
-        };
+
+            };
 
             _context.Patients.Add(patient);
             await _context.SaveChangesAsync();
@@ -243,6 +251,7 @@ namespace AngularStandaloneDemo.Controllers
 
             return patients;
         }
+
         // GET: api/Patients/appointments/5
         [HttpGet("appointments/{id}")]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetPatientAppointments(int id)
@@ -275,9 +284,127 @@ namespace AngularStandaloneDemo.Controllers
             return records;
         }
 
+        // POST: api/Patients/{patientId}/lab-results/{labId}/email
+        [HttpPost("{patientId}/lab-results/{labId}/email")]
+        public async Task<IActionResult> EmailLabResults(
+            int patientId,
+            int labId,
+            [FromBody] EmailRequest request)
+        {
+            try
+            {
+                _logger.LogInformation($"Attempting to email lab results. PatientId: {patientId}, LabId: {labId}, Email: {request.Email}");
+
+                // Validate input
+                if (string.IsNullOrEmpty(request.Email))
+                {
+                    _logger.LogWarning("Email address is missing");
+                    return BadRequest(new { message = "Email address is required" });
+                }
+
+                // Get the patient
+                var patient = await _context.Patients.FindAsync(patientId);
+                if (patient == null)
+                {
+                    _logger.LogWarning($"Patient not found. PatientId: {patientId}");
+                    return NotFound(new { message = "Patient not found" });
+                }
+
+                // Get the lab result
+                var labResult = await _labResultService.GetLabResultByIdAsync(patientId, labId);
+
+                if (labResult == null)
+                {
+                    _logger.LogWarning($"Lab result not found. PatientId: {patientId}, LabId: {labId}");
+                    return NotFound(new { message = "Lab result not found" });
+                }
+
+                // Create email content
+                string subject = "Your Lab Test Results";
+                string body = $@"
+                    <html>
+                    <head>
+                        <style>
+                            body {{ font-family: Arial, sans-serif; color: #333; }}
+                            .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                            .header {{ background-color: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }}
+                            .content {{ background-color: #f9f9f9; padding: 20px; border: 1px solid #ddd; border-radius: 0 0 5px 5px; }}
+                            table {{ border-collapse: collapse; width: 100%; margin: 20px 0; }}
+                            td {{ padding: 12px; border: 1px solid #ddd; }}
+                            .label {{ font-weight: bold; background-color: #f0f0f0; width: 40%; }}
+                            .footer {{ margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #666; }}
+                        </style>
+                    </head>
+                    <body>
+                        <div class='container'>
+                            <div class='header'>
+                                <h2>Lab Test Results</h2>
+                            </div>
+                            <div class='content'>
+                                <p>Dear {patient.FirstName} {patient.LastName},</p>
+                                <p>Your lab test results are ready for review:</p>
+                                
+                                <table>
+                                    <tr>
+                                        <td class='label'>Test Name:</td>
+                                        <td>{labResult.TestName}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class='label'>Test Date:</td>
+                                        <td>{labResult.TestDate:MMMM dd, yyyy}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class='label'>Result:</td>
+                                        <td><strong>{labResult.Result}</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class='label'>Reference Range:</td>
+                                        <td>{labResult.ReferenceRange ?? "N/A"}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class='label'>Ordering Provider:</td>
+                                        <td>{labResult.OrderingProvider ?? "N/A"}</td>
+                                    </tr>
+                                </table>
+                                
+                                {(!string.IsNullOrEmpty(labResult.Notes) ? $"<div style='background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 20px 0;'><strong>Notes:</strong><br/>{labResult.Notes}</div>" : "")}
+                                
+                                <div class='footer'>
+                                    <p>If you have any questions about these results, please contact your healthcare provider.</p>
+                                    <p><strong>Important:</strong> This is an automated email. Please do not reply to this message.</p>
+                                    <p>Best regards,<br/>Your Healthcare Team</p>
+                                </div>
+                            </div>
+                        </div>
+                    </body>
+                    </html>";
+
+                // Send email
+                bool emailSent = await _emailService.SendEmailAsync(request.Email, subject, body);
+
+                if (emailSent)
+                {
+                    _logger.LogInformation($"Email sent successfully to {request.Email}");
+                    return Ok(new { message = $"Lab results successfully emailed to {request.Email}" });
+                }
+                else
+                {
+                    _logger.LogError("Failed to send email");
+                    return StatusCode(500, new { message = "Failed to send email. Please check server logs and email configuration." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error sending email for lab result {labId}: {ex.Message}");
+                return StatusCode(500, new { message = $"An error occurred while sending email: {ex.Message}" });
+            }
+        }
+
         private bool PatientExists(int id)
         {
             return _context.Patients.Any(e => e.Id == id);
         }
     }
+
+   
 }

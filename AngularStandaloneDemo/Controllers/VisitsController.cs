@@ -102,8 +102,14 @@ namespace AngularStandaloneDemo.Controllers
                 {
                     DiagnosisCode = diagnosis.DiagnosisCode,
                     Description = diagnosis.Description,
-                    DiagnosisDate = diagnosis.DiagnosisDate,
-                    IsActive = diagnosis.IsActive
+                    IsActive = diagnosis.IsActive,
+                    TreatmentPlan = diagnosis.TreatmentPlan,
+                    FollowUpDate = diagnosis.FollowUpDate,
+                    FollowUpNeeded = diagnosis.FollowUpNeeded,
+                    TreatmentNotes = diagnosis.TreatmentNotes,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+
                 });
             }
 
@@ -173,9 +179,16 @@ namespace AngularStandaloneDemo.Controllers
                         // Update existing diagnosis - explicitly update all properties
                         existingDiagnosis.DiagnosisCode = diagnosisModel.DiagnosisCode;
                         existingDiagnosis.Description = diagnosisModel.Description;
-                        existingDiagnosis.DiagnosisDate = diagnosisModel.DiagnosisDate;
                         existingDiagnosis.IsActive = diagnosisModel.IsActive;
                         // Add any other properties that need to be updated
+                        existingDiagnosis.TreatmentPlan = diagnosisModel.TreatmentPlan;
+                        existingDiagnosis.FollowUpDate = diagnosisModel.FollowUpDate;
+                        existingDiagnosis.FollowUpNeeded = diagnosisModel.FollowUpNeeded;
+                        existingDiagnosis.TreatmentNotes = diagnosisModel.TreatmentNotes;
+                        existingDiagnosis.UpdatedAt = DateTime.UtcNow; // Update the timestamp
+                        existingDiagnosis.CreatedAt = existingDiagnosis.CreatedAt; // Keep the original created timestamp
+                        existingDiagnosis.VisitId = existingVisit.Id; // Ensure the VisitId is set correctly
+
                     }
                     else
                     {

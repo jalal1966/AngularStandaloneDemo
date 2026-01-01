@@ -77,6 +77,8 @@ namespace AngularStandaloneDemo.Controllers
             existingImmunization.AdministrationDate = immunization.AdministrationDate;
             existingImmunization.LotNumber = immunization.LotNumber;
             existingImmunization.AdministeringProvider = immunization.AdministeringProvider;
+            existingImmunization.NextDoseDate = immunization.NextDoseDate;
+            existingImmunization.Manufacturer = immunization.Manufacturer;
 
             await _context.SaveChangesAsync();
 

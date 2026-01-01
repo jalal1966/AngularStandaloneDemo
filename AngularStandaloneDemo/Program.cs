@@ -1,15 +1,13 @@
-using System.Security.Principal;
-using System.Text;
 using AngularStandaloneDemo.Data;
+using AngularStandaloneDemo.Filters;
 using AngularStandaloneDemo.Models;
 using AngularStandaloneDemo.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using AngularStandaloneDemo.Filters;
 using System.Diagnostics;
-
+using System.Text;
 internal class Program
 {
     private static void Main(string[] args)
@@ -23,7 +21,6 @@ internal class Program
             logging.AddDebug();    // Debug output logger
         });
 
- 
 
         // Register the ValidationActionFilter
         builder.Services.AddScoped<ValidationActionFilter>();
@@ -54,6 +51,11 @@ internal class Program
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IEmailService, EmailService>();
         builder.Services.AddScoped<TokenService>();
+
+        // ADD THESE NEW SERVICE REGISTRATIONS FOR LAB RESULTS
+        builder.Services.AddScoped<ILabResultService, LabResultService>();
+        builder.Services.AddScoped<IPatientService, PatientService>();
+
 
         // JWT Authentication - keeping your existing configuration
         builder.Services.AddAuthentication(options =>
@@ -102,9 +104,29 @@ internal class Program
                     .AllowAnyHeader());
         });
 
+        // Register your services
+        builder.Services.AddScoped<ILabResultService, LabResultService>();
+        builder.Services.AddScoped<IEmailService, EmailService>();
+
+        // If you don't have them yet, also add:
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        // Add CORS if needed (if your frontend is on a different port)
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAngular", policy =>
+            {
+                policy.WithOrigins("http://localhost:4200") // Your Angular app URL
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
 
 
         var app = builder.Build();
+        app.UseCors("AllowAngular");
+
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

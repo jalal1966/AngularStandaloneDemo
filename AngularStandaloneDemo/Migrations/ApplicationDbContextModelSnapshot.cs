@@ -223,9 +223,6 @@ namespace AngularStandaloneDemo.Migrations
                     b.Property<string>("DiagnosisCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DiagnosisDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime?>("FollowUpDate")
                         .HasColumnType("date");
 
@@ -457,6 +454,39 @@ namespace AngularStandaloneDemo.Migrations
                     b.HasIndex("VisitId");
 
                     b.ToTable("Medications");
+                });
+
+            modelBuilder.Entity("AngularStandaloneDemo.Models.Medicine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Company")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Composition")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Packaging")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Medicine", (string)null);
                 });
 
             modelBuilder.Entity("AngularStandaloneDemo.Models.Patient", b =>

@@ -3,68 +3,84 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace AngularStandaloneDemo.Services
 {
     public interface IEmailService
     {
-        Task<bool> SendEmail(string to, string subject, string body);
+        Task<bool> SendEmailAsync(string to, string subject, string body);
     }
 
     public class EmailService : IEmailService
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IConfiguration configuration)
+        public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
-        public bool SendEmail(string to, string subject, string body)
+        public async Task<bool> SendEmailAsync(string to, string subject, string body)
         {
             try
             {
-                // For development purposes, you might want to just log the email
-                // In production, replace with actual SMTP implementation
-                Console.WriteLine($"Email to: {to}, Subject: {subject}, Body: {body}");
+                _logger.LogInformation($"Attempting to send email to: {to}");
 
-                // Uncomment to use real email sending
-                /*
-                var smtpSettings = _configuration.GetSection("SmtpSettings");
-                var client = new SmtpClient(smtpSettings["Host"])
+                var smtpHost = _configuration["Email:SmtpHost"];
+                var smtpPortStr = _configuration["Email:SmtpPort"];
+                var username = _configuration["Email:Username"];
+                var password = _configuration["Email:Password"];
+                var fromAddress = _configuration["Email:FromAddress"];
+                var enableSslStr = _configuration["Email:EnableSsl"];
+
+                if (string.IsNullOrEmpty(smtpHost) || string.IsNullOrEmpty(password))
                 {
-                    Port = int.Parse(smtpSettings["Port"]),
-                    EnableSsl = bool.Parse(smtpSettings["EnableSsl"]),
-                    Credentials = new NetworkCredential(
-                        smtpSettings["Username"], 
-                        smtpSettings["Password"])
+                    _logger.LogError("Email configuration is incomplete. Check appsettings.json");
+                    return false;
+                }
+
+                if (!int.TryParse(smtpPortStr, out int smtpPort))
+                {
+                    _logger.LogError($"Invalid SMTP port: {smtpPortStr}");
+                    return false;
+                }
+
+                if (!bool.TryParse(enableSslStr, out bool enableSsl))
+                {
+                    enableSsl = true;
+                }
+
+                using var smtpClient = new SmtpClient(smtpHost, smtpPort)
+                {
+                    EnableSsl = enableSsl,
+                    Credentials = new NetworkCredential(username, password),
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Timeout = 30000
                 };
-                
-                var message = new MailMessage
+
+                using var mailMessage = new MailMessage
                 {
-                    From = new MailAddress(smtpSettings["FromEmail"], smtpSettings["FromName"]),
+                    From = new MailAddress(fromAddress),
                     Subject = subject,
                     Body = body,
                     IsBodyHtml = true
                 };
-                message.To.Add(to);
-                
-                await client.SendMailAsync(message);
-                */
+
+                mailMessage.To.Add(to);
+
+                await smtpClient.SendMailAsync(mailMessage);
+                _logger.LogInformation($"Email successfully sent to: {to}");
 
                 return true;
             }
             catch (Exception ex)
             {
-                // Log the exception
-                Console.WriteLine($"Error sending email: {ex.Message}");
+                _logger.LogError(ex, $"Error sending email: {ex.Message}");
                 return false;
             }
-        }
-
-        Task<bool> IEmailService.SendEmail(string to, string subject, string body)
-        {
-            throw new NotImplementedException();
         }
     }
 }

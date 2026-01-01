@@ -22,18 +22,23 @@ namespace AngularStandaloneDemo.Data
         public DbSet<PatientDetails> PatientDetails { get; set; }
         public DbSet<MedicalRecord> MedicalRecords { get; set; }
         public DbSet<Allergy> Allergies { get; set; }
-        
+
         public DbSet<Medication> Medications { get; set; }
+        public DbSet<VitalSigns> VitalSigns { get; set; }
         public DbSet<LabResult> LabResults { get; set; }
         public DbSet<Immunization> Immunizations { get; set; }
         public DbSet<Visit> Visits { get; set; }
         public DbSet<Diagnosis> Diagnosis { get; set; }
         public DbSet<Pressure> Pressure { get; set; }
-       
-       
-       
+        public DbSet<Medicine> Medicines { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Medicine>()
+                .ToTable("Medicine"); // Explicitly set table name
+
+
             // ✅ Configure precision and scale for BloodPressureRatio
             modelBuilder.Entity<Pressure>()
                 .Property(p => p.BloodPressureRatio)
@@ -186,6 +191,7 @@ namespace AngularStandaloneDemo.Data
             if (DateTime.TryParse(patientInfo.DateOfBirth, out var dob))
             {
                 patient.DateOfBirth = dob;
+                //patient.DateOfBirth.ToLocalTime();
             }
 
             patient.GenderID = patientInfo.GenderID;
@@ -197,6 +203,7 @@ namespace AngularStandaloneDemo.Data
             await SaveChangesAsync();
             return true;
         }
+        //public DbSet<AngularStandaloneDemo.Models.VitalSigns> VitalSigns { get; set; } = default!;
     };
    
 }

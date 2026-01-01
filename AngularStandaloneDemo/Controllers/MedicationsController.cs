@@ -10,69 +10,69 @@ using AngularStandaloneDemo.Models;
 
 namespace AngularStandaloneDemo.Controllers
 {
-   
-        [ApiController]
-        [Route("api/patients/{VisitId}/medications")]
-        public class MedicationsController : ControllerBase
+
+    [ApiController]
+    [Route("api/patients/{VisitId}/medications")]
+    public class MedicationsController : ControllerBase
+    {
+        private readonly Data.ApplicationDbContext _context;
+
+        public MedicationsController(Data.ApplicationDbContext context)
         {
-            private readonly Data.ApplicationDbContext _context;
+            _context = context;
+        }
 
-            public MedicationsController(Data.ApplicationDbContext context)
+        // GET: api/patients/5/medications
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Medication>>> GetMedications(int VisitId)
+        {
+            var medications = await _context.Medications
+                .Where(m => m.VisitId == VisitId)
+                .Include(m => m.Diagnosis)
+                .ToListAsync();
+
+            return Ok(medications);
+        }
+
+        // GET: api/patients/5/medications/active
+        [HttpGet("active")]
+        public async Task<ActionResult<IEnumerable<Medication>>> GetActiveMedications(int VisitId)
+        {
+            var medications = await _context.Medications
+                .Where(m => m.VisitId == VisitId && m.IsActive)
+                .Include(m => m.Diagnosis)
+                .ToListAsync();
+
+            return Ok(medications);
+        }
+
+        // GET: api/patients/5/medications/3
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Medication>> GetMedication(int VisitId, int id)
+        {
+            var medication = await _context.Medications
+                .Include(m => m.Diagnosis)
+                .FirstOrDefaultAsync(m => m.VisitId == VisitId && m.Id == id);
+
+            if (medication == null)
             {
-                _context = context;
+                return NotFound();
             }
 
-            // GET: api/patients/5/medications
-            [HttpGet]
-            public async Task<ActionResult<IEnumerable<Medication>>> GetMedications(int VisitId)
-            {
-                var medications = await _context.Medications
-                    .Where(m => m.VisitId == VisitId)
-                    .Include(m => m.Diagnosis)
-                    .ToListAsync();
+            return Ok(medication);
+        }
 
-                return Ok(medications);
-            }
+        // GET: api/patients/5/medications/diagnosis/7
+        [HttpGet("diagnosis/{diagnosisId}")]
+        public async Task<ActionResult<IEnumerable<Medication>>> GetMedicationsByDiagnosis(int VisitId, int diagnosisId)
+        {
+            var medications = await _context.Medications
+               .Where(m => m.VisitId == VisitId && m.DiagnosisId == diagnosisId)
+                .Include(m => m.Diagnosis)
+                .ToListAsync();
 
-            // GET: api/patients/5/medications/active
-            [HttpGet("active")]
-            public async Task<ActionResult<IEnumerable<Medication>>> GetActiveMedications(int VisitId)
-            {
-                var medications = await _context.Medications
-                    .Where(m => m.VisitId == VisitId && m.IsActive)
-                    .Include(m => m.Diagnosis)
-                    .ToListAsync();
-
-                return Ok(medications);
-            }
-
-            // GET: api/patients/5/medications/3
-            [HttpGet("{id}")]
-            public async Task<ActionResult<Medication>> GetMedication(int VisitId, int id)
-            {
-                var medication = await _context.Medications
-                    .Include(m => m.Diagnosis)
-                    .FirstOrDefaultAsync(m => m.VisitId == VisitId && m.Id == id);
-
-                if (medication == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(medication);
-            }
-
-            // GET: api/patients/5/medications/diagnosis/7
-             [HttpGet("diagnosis/{diagnosisId}")]
-             public async Task<ActionResult<IEnumerable<Medication>>> GetMedicationsByDiagnosis(int VisitId, int diagnosisId)
-             {
-                var medications = await _context.Medications
-                   .Where(m => m.VisitId == VisitId && m.DiagnosisId == diagnosisId)
-                    .Include(m => m.Diagnosis)
-                    .ToListAsync();
-
-                 return Ok(medications);
-             }
+            return Ok(medications);
+        }
 
         // POST: api/patients/5/medications
         [HttpPost]
@@ -185,6 +185,10 @@ namespace AngularStandaloneDemo.Controllers
 
             return Ok(medications);
         }
+
+
     }
+
     
+
 }
