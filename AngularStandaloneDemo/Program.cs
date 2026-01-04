@@ -47,6 +47,8 @@ internal class Program
         .AddEntityFrameworkStores<AngularStandaloneDemo.Data.ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
+      
+
         // Register services from Startup.ConfigureServices
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IEmailService, EmailService>();

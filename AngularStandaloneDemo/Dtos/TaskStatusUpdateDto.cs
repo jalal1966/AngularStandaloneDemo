@@ -1,9 +1,11 @@
-﻿namespace AngularStandaloneDemo.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace AngularStandaloneDemo.Dtos
 {
+    // DTO for updating just the status
     public class TaskStatusUpdateDto
     {
-        // public System.Threading.Tasks.TaskStatus Status { get; set; }
-        public int TaskId { get; set; }
-        public required string Status { get; set; }
+        [Required]
+        public Enums.TaskStatus Status { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using AngularStandaloneDemo.Dtos;
 using AngularStandaloneDemo.Models;
 using AngularStandaloneDemo.Services;
 using DoctorAppointmentSystem.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,8 +13,10 @@ using System.Threading.Tasks;
 
 namespace AngularStandaloneDemo.Controllers
 {
+   
+    
     [Route("api/[controller]")]
-    [ApiController]
+   
     public class PatientsController : ControllerBase
     {
         private readonly ILabResultService _labResultService;

@@ -31,7 +31,9 @@ namespace AngularStandaloneDemo.Data
         public DbSet<Diagnosis> Diagnosis { get; set; }
         public DbSet<Pressure> Pressure { get; set; }
         public DbSet<Medicine> Medicines { get; set; }
+        public DbSet<PatientTask> PatientTasks { get; set; }
 
+        //public DbSet<PatientTask> PatientTasks { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
